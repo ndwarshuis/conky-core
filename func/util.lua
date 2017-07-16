@@ -64,6 +64,14 @@ local precision_round_to_string = function(x, sig_fig)
 	end
 end
 
+--[[
+available modes per lua docs
+*n: number (actually returns a number)
+*a: entire file (default here)
+*l: reads one line and strips \n (default for read cmd)
+*L; reads one line and keeps \n
+N: reads number of lines (where N is a number)
+--]]
 local read_entire_file = function(file, regex, mode)
 	if not file then return '' end
 	local str = file:read(mode or '*a')

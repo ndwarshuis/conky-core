@@ -819,7 +819,7 @@ local initPlot = function(arg)
 			p2 = p2
 		},
 		seconds = seconds,
-		n = seconds * __G_INIT_DATA__.UPDATE_INTERVAL,
+		n = seconds * _G_INIT_DATA_.UPDATE_INTERVAL,
 		fill_source = data_fill_pattern and Super.Pattern{
 			pattern = data_fill_pattern,
 			p1 = p1,

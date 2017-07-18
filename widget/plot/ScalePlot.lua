@@ -5,7 +5,7 @@ local LabelPlot = require 'LabelPlot'
 local __table_insert	= table.insert
 local __table_remove	= table.remove
 
-local __scale_data = function(obj, cr, new_domain, new_factor)
+local scale_data = function(obj, cr, new_domain, new_factor)
 	local y = obj.y
 	local current_factor = obj.scale.factor
 	local data = obj.plot.data
@@ -59,12 +59,12 @@ local update = function(obj, cr, value)
 	--###scale data
 	
 	if new_domain > scale.domain then 								--scale up
-		__scale_data(obj, cr, new_domain, new_factor)
+		scale_data(obj, cr, new_domain, new_factor)
 	elseif new_domain < scale.domain then							--check timers
 		if n == 0 then 												--scale down bc no timers to block
-			__scale_data(obj, cr, new_domain, new_factor)
+			scale_data(obj, cr, new_domain, new_factor)
 		elseif scale.timers[1].domain < scale.domain then			--scale down to active timer
-			__scale_data(obj, cr, scale.timers[1].domain, scale.timers[1].factor)
+			scale_data(obj, cr, scale.timers[1].domain, scale.timers[1].factor)
 		end
 	end
 	

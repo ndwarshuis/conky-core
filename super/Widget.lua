@@ -1,10 +1,10 @@
-local c = {}
+local M = {}
 
-local Super	= require 'Super'
+local Super			= require 'Super'
 
-local _CR		= require 'CR'
-local util		= require 'util'
-local schema	= require 'default_patterns'
+local _CR			= require 'CR'
+local util			= require 'util'
+local schema		= require 'default_patterns'
 
 local Arc			= require 'Arc'
 local Dial			= require 'Dial'
@@ -19,21 +19,21 @@ local LabelPlot		= require 'LabelPlot'
 local Image			= require 'Image'
 local ScaledImage	= require 'ScaledImage'
 
-local _CAIRO_NEW_PATH 				= cairo_new_path
-local _CAIRO_RECTANGLE				= cairo_rectangle
-local _CAIRO_COPY_PATH				= cairo_copy_path
-local _CAIRO_SET_FONT_FACE 		  	= cairo_set_font_face
-local _CAIRO_SET_FONT_SIZE 		  	= cairo_set_font_size
-local _CAIRO_FONT_EXTENTS  		  	= cairo_font_extents
-local _CAIRO_TOY_FONT_FACE_CREATE 	= cairo_toy_font_face_create
+local __cairo_new_path 				= cairo_new_path
+local __cairo_rectangle				= cairo_rectangle
+local __cairo_copy_path				= cairo_copy_path
+local __cairo_set_font_face 		= cairo_set_font_face
+local __cairo_set_font_size 		= cairo_set_font_size
+local __cairo_font_extents  		= cairo_font_extents
+local __cairo_toy_font_face_create 	= cairo_toy_font_face_create
 
-local _UNPACK		= unpack
-local _MATH_ATAN2	= math.atan2
-local _MATH_SIN		= math.sin
-local _MATH_COS		= math.cos
-local _MATH_CEIL	= math.ceil
-local _MATH_LOG		= math.log
-local _MATH_RAD		= math.rad
+local __unpack		= unpack
+local __math_atan2	= math.atan2
+local __math_sin	= math.sin
+local __math_cos	= math.cos
+local __math_ceil	= math.ceil
+local __math_log	= math.log
+local __math_rad	= math.rad
 
 --Box(x, y, [width], [height])
 
@@ -46,12 +46,12 @@ local Box = function(arg)
 	local height = arg.height or BOX_HEIGHT
 
 	local obj = {
-		x = arg.x,
-		y = arg.y,
-		width = width,
-		height = height,
-		right_x = width + arg.x,
-		bottom_y = height + arg.y
+		x 			= arg.x,
+		y 			= arg.y,
+		width		= width,
+		height 		= height,
+		right_x 	= width + arg.x,
+		bottom_y 	= height + arg.y
 	}
 
 	return obj
@@ -77,8 +77,8 @@ local initArc = function(arg)
 		y = y,
 		thickness = thickness,
 		cap = arg.cap or ARC_CAP,
-		path = Arc.create_path(x, y, radius, _MATH_RAD(arg.theta0 or ARC_THETA0),
-			_MATH_RAD(arg.theta1 or ARC_THETA1)),
+		path = Arc.create_path(x, y, radius, __math_rad(arg.theta0 or ARC_THETA0),
+			__math_rad(arg.theta1 or ARC_THETA1)),
 		source = Super.Pattern{
 			pattern = arg.arc_pattern or ARC_PATTERN,
 			p1 = {x = x, y = y},
@@ -144,8 +144,8 @@ local initDial = function(arg)
 		r2 					= outer_radius
 	}
 
-	theta0 = _MATH_RAD(theta0)
-	theta1 = _MATH_RAD(theta1)
+	theta0 = __math_rad(theta0)
+	theta1 = __math_rad(theta1)
 
 	obj._make_dial_path = util.memoize(
 		function(percent)
@@ -221,7 +221,7 @@ local initPoly = function(arg)
 	
 	for i = 1, #arg do points[i] = arg[i] end
 	
-	obj.path = Poly.create_path(arg.closed, _UNPACK(points))
+	obj.path = Poly.create_path(arg.closed, __unpack(points))
 
 	obj.source = Super.Pattern{
 		pattern = line_pattern or POLY_LINE_PATTERN,
@@ -288,9 +288,9 @@ local initBar = function(arg)
 	local p2_x = p2.x
 	local p2_y = p2.y
 
-	local theta = _MATH_ATAN2(p2_y - p1_y, p2_x - p1_x)
-	local delta_x = 0.5 * thickness * _MATH_SIN(theta) --and yes, these are actually flipped
-	local delta_y = 0.5 * thickness * _MATH_COS(theta)
+	local theta = __math_atan2(p2_y - p1_y, p2_x - p1_x)
+	local delta_x = 0.5 * thickness * __math_sin(theta) --and yes, these are actually flipped
+	local delta_y = 0.5 * thickness * __math_cos(theta)
 	local p1_pattern = {x = p1_x + delta_x, y = p1_y + delta_y}
 	local p2_pattern = {x = p1_x - delta_x, y = p1_y - delta_y}
 
@@ -396,9 +396,9 @@ local RECT_LINE_THICKNESS = 1
 local RECT_LINE_JOIN = CAIRO_LINE_JOIN_MITER
 
 local RECT_CREATE_PATH = function(x, y, w, h)
-	_CAIRO_NEW_PATH(_CR)
-	_CAIRO_RECTANGLE(_CR, x, y, w, h)
-	return _CAIRO_COPY_PATH(_CR)
+	__cairo_new_path(_CR)
+	__cairo_rectangle(_CR, x, y, w, h)
+	return __cairo_copy_path(_CR)
 end
 
 local initRect = function(arg)
@@ -518,7 +518,7 @@ local initText = function(arg)
 
 	local font_size = arg.font_size	or TEXT_FONT_SIZE
 
-	local font_face = _CAIRO_TOY_FONT_FACE_CREATE(
+	local font_face = __cairo_toy_font_face_create(
 		arg.font or TEXT_FONT,
 		arg.slant or TEXT_FONT_SLANT,
 		arg.weight or TEXT_FONT_WEIGHT
@@ -527,9 +527,9 @@ local initText = function(arg)
 		pattern = arg.text_color or TEXT_COLOR
 	}
 
-	_CAIRO_SET_FONT_SIZE(_CR, font_size)
-	_CAIRO_SET_FONT_FACE(_CR, font_face)
-	_CAIRO_FONT_EXTENTS(_CR, fe)
+	__cairo_set_font_size(_CR, font_size)
+	__cairo_set_font_face(_CR, font_face)
+	__cairo_font_extents(_CR, fe)
 
 	local delta_y
 	local y_align = arg.y_align or TEXT_Y_ALIGN
@@ -603,7 +603,6 @@ TextColumn(x, y, [spacing], [max_length], [font_size], [x_align], [y_align],
 ]]
 
 local TEXTCOLUMN_SPACING = 20
---~ local TEXTCOLUMN_MAX_LENGTH = -1
 local TEXTCOLUMN_NUM_ROWS = 1
 
 local initTextColumn = function(arg)
@@ -613,7 +612,7 @@ local initTextColumn = function(arg)
 			n = (#arg == 0) and (arg.num_rows or TEXTCOLUMN_NUM_ROWS) or #arg
 		},
 		spacing = arg.spacing or TEXTCOLUMN_SPACING,
-		max_length = arg.max_length-- or TEXTCOLUMN_MAX_LENGTH
+		max_length = arg.max_length
 	}
 
 	for i = 1, obj.rows.n do
@@ -955,14 +954,6 @@ local SCALEPLOT_THRESHOLD = 0.9	--trip point to go to next scale domain
 local SCALEPLOT_BASE = 2			--base for log scale
 local SCALEPLOT_INITIAL = 1		--initial scale domain value
 
---~ local SCALEPLOT_SCALE_FUNCTION = function(x)
-	--~ local domain = (x > 0) and _MATH_CEIL(_MATH_LOG(x / SCALEPLOT_THRESHOLD) /
-		--~ _MATH_LOG(SCALEPLOT_BASE) - SCALEPLOT_INITIAL + 1) or 1
-	--~ domain = (domain < 1) and 1 or domain
-	--~ local factor = SCALEPLOT_BASE ^ -(SCALEPLOT_INITIAL + domain - 1)
-	--~ return domain, factor
---~ end
-
 local SCALEPLOT_Y_LABEL_FUNCTION = function(kilobytes)
 	local new_unit = util.get_unit_base_K(kilobytes)
 	local converted_bytes = util.convert_bytes(kilobytes, 'KiB', new_unit)
@@ -996,13 +987,12 @@ local initScalePlot = function(arg)
 	}
 	
 	obj.scale = {
-		--~ _func = scale_function or SCALEPLOT_SCALE_FUNCTION,
 		_func = function(x)
 			local threshold = arg.scaleplot_threshold or SCALEPLOT_THRESHOLD
 			
 			local domain = 1
 			if x > 0 then
-				domain = _MATH_CEIL(_MATH_LOG(x / threshold) / _MATH_LOG(base) - initial + 1)
+				domain = __math_ceil(__math_log(x / threshold) / __math_log(base) - initial + 1)
 			end
 
 			if domain < 1 then domain = 1 end
@@ -1070,12 +1060,9 @@ end
 
 local PANEL_LINE_PATTERN = schema.dark_grey
 local PANEL_FILL_PATTERN = schema.transparent_black
---~ local PANEL_GLOSS_HEIGHT = 20
 
 local initPanel = function(arg)
 
-	--~ PANEL_FILL_PATTERN.color_stops[2].stop = PANEL_GLOSS_HEIGHT / arg.height
-	
 	local obj = initFillRect{
 		x 				= arg.x + 0.5,
 		y 				= arg.y + 0.5,
@@ -1088,25 +1075,25 @@ local initPanel = function(arg)
 	return obj
 end
 
-c.Arc = initArc
-c.Dial = initDial
-c.CompoundDial = initCompoundDial
-c.Poly = initPoly
-c.Line = initLine
-c.Bar = initBar
-c.CompoundBar = initCompoundBar
-c.Rect = initRect
-c.FillRect = initFillRect
-c.Image = initImage
-c.ScaledImage = initScaledImage
-c.Text = initText
-c.CriticalText = initCriticalText
-c.TextColumn = initTextColumn
-c.Table = initTable
-c.Plot = initPlot
-c.LabelPlot = initLabelPlot
-c.ScalePlot = initScalePlot
-c.Header = initHeader
-c.Panel = initPanel
+M.Arc = initArc
+M.Dial = initDial
+M.CompoundDial = initCompoundDial
+M.Poly = initPoly
+M.Line = initLine
+M.Bar = initBar
+M.CompoundBar = initCompoundBar
+M.Rect = initRect
+M.FillRect = initFillRect
+M.Image = initImage
+M.ScaledImage = initScaledImage
+M.Text = initText
+M.CriticalText = initCriticalText
+M.TextColumn = initTextColumn
+M.Table = initTable
+M.Plot = initPlot
+M.LabelPlot = initLabelPlot
+M.ScalePlot = initScalePlot
+M.Header = initHeader
+M.Panel = initPanel
 
-return c
+return M

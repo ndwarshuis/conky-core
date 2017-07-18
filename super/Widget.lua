@@ -35,9 +35,10 @@ local __math_log	= math.log
 local __math_rad	= math.rad
 
 -- dummy drawing surface
-local cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1366, 768)
-local _CR = cairo_create(cs)
-cairo_surface_destroy(cs)
+local _cs_ = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1366, 768)
+local CR_DUMMY = cairo_create(_cs_)
+cairo_surface_destroy(_cs_)
+_cs_ = nil
 
 --Box(x, y, [width], [height])
 
@@ -81,7 +82,7 @@ local initArc = function(arg)
 		y = y,
 		thickness = thickness,
 		cap = arg.cap or ARC_CAP,
-		path = Arc.create_path(_CR, x, y, radius, __math_rad(arg.theta0 or ARC_THETA0),
+		path = Arc.create_path(CR_DUMMY, x, y, radius, __math_rad(arg.theta0 or ARC_THETA0),
 			__math_rad(arg.theta1 or ARC_THETA1)),
 		source = Super.Pattern{
 			pattern = arg.arc_pattern or ARC_PATTERN,
@@ -154,7 +155,7 @@ local initDial = function(arg)
 	obj._make_dial_path = util.memoize(
 		function(percent)
 			obj.dial_angle = (1 - percent) * theta0 + percent * theta1
-			return Arc.create_path(_CR, x, y, radius, theta0, obj.dial_angle)
+			return Arc.create_path(CR_DUMMY, x, y, radius, theta0, obj.dial_angle)
 		end
 	)
 
@@ -225,7 +226,7 @@ local initPoly = function(arg)
 	
 	for i = 1, #arg do points[i] = arg[i] end
 	
-	obj.path = Poly.create_path(_CR, arg.closed, __unpack(points))
+	obj.path = Poly.create_path(CR_DUMMY, arg.closed, __unpack(points))
 
 	obj.source = Super.Pattern{
 		pattern = line_pattern or POLY_LINE_PATTERN,
@@ -325,7 +326,7 @@ local initBar = function(arg)
 			local mp = obj.midpoint
 			mp.x = (p2_x - p1_x) * percent + p1_x
 			mp.y = (p2_y - p1_y) * percent + p1_y
-			return Poly.create_path(_CR, nil, p1, mp)
+			return Poly.create_path(CR_DUMMY, nil, p1, mp)
 		end
 	)
 
@@ -400,9 +401,9 @@ local RECT_LINE_THICKNESS = 1
 local RECT_LINE_JOIN = CAIRO_LINE_JOIN_MITER
 
 local RECT_CREATE_PATH = function(x, y, w, h)
-	__cairo_new_path(_CR)
-	__cairo_rectangle(_CR, x, y, w, h)
-	return __cairo_copy_path(_CR)
+	__cairo_new_path(CR_DUMMY)
+	__cairo_rectangle(CR_DUMMY, x, y, w, h)
+	return __cairo_copy_path(CR_DUMMY)
 end
 
 local initRect = function(arg)
@@ -531,9 +532,9 @@ local initText = function(arg)
 		pattern = arg.text_color or TEXT_COLOR
 	}
 
-	__cairo_set_font_size(_CR, font_size)
-	__cairo_set_font_face(_CR, font_face)
-	__cairo_font_extents(_CR, fe)
+	__cairo_set_font_size(CR_DUMMY, font_size)
+	__cairo_set_font_face(CR_DUMMY, font_face)
+	__cairo_font_extents(CR_DUMMY, fe)
 
 	local delta_y
 	local y_align = arg.y_align or TEXT_Y_ALIGN
@@ -560,7 +561,7 @@ local initText = function(arg)
 		append_end = arg.append_end
 	}
 
-	Text.set(obj, _CR, (arg.text or TEXT_STRING))
+	Text.set(obj, CR_DUMMY, (arg.text or TEXT_STRING))
 
 	return obj
 end
@@ -595,7 +596,7 @@ local initCriticalText = function(arg)
 		critical_limit	= arg.critical_limit
 	}
 
-	CriticalText.set(obj, _CR, '0')
+	CriticalText.set(obj, CR_DUMMY, '0')
 
 	return obj
 end
@@ -633,7 +634,7 @@ local initTextColumn = function(arg)
 			append_front 	= arg.append_front,
 			append_end 		= arg.append_end
 		}
-		TextColumn.set(obj, _CR, i, (#arg == 0) and 'row'..i or arg[i])
+		TextColumn.set(obj, CR_DUMMY, i, (#arg == 0) and 'row'..i or arg[i])
 	end
 
 	return obj
@@ -763,8 +764,8 @@ Plot([x], [y], width, height, [seconds], [num_x_intrvl], [num_y_intrvl],
 	[outline_pattern], [intrvl_pattern], [data_line_pattern], [data_fill_pattern])
 ]]
 
-local PLOT_SECONDS = 60
-local PLOT_NUM_X_INTERVAL = 6
+local PLOT_SECONDS = 90
+local PLOT_NUM_X_INTERVAL = 9
 local PLOT_NUM_Y_INTERVAL = 4
 local PLOT_OUTLINE_PATTERN = schema.dark_grey
 local PLOT_INTRVL_PATTERN = schema.dark_grey
@@ -830,9 +831,9 @@ local initPlot = function(arg)
 		}
 	}
 	
-	Plot.position_x_intrvls(obj, _CR)
-	Plot.position_y_intrvls(obj, _CR)
-	Plot.position_graph_outline(obj, _CR)
+	Plot.position_x_intrvls(obj, CR_DUMMY)
+	Plot.position_y_intrvls(obj, CR_DUMMY)
+	Plot.position_graph_outline(obj, CR_DUMMY)
 
 	return obj
 end
@@ -848,8 +849,8 @@ local LABELPLOT_LABEL_FONT = "Neuropolitical"
 local LABELPLOT_LABEL_SLANT = CAIRO_FONT_SLANT_NORMAL
 local LABELPLOT_LABEL_WEIGHT = CAIRO_FONT_WEIGHT_NORMAL
 local LABELPLOT_LABEL_COLOR = schema.mid_grey
-local LABELPLOT_SECONDS = 60
-local LABELPLOT_NUM_X_INTERVAL = 6
+local LABELPLOT_SECONDS = 90
+local LABELPLOT_NUM_X_INTERVAL = 9
 local LABELPLOT_NUM_Y_INTERVAL = 4
 
 local initLabelPlot = function(arg)
@@ -915,7 +916,7 @@ local initLabelPlot = function(arg)
 		}
 	end
 
-	LabelPlot.populate_x_labels(obj, _CR, x_input_factor)
+	LabelPlot.populate_x_labels(obj, CR_DUMMY, x_input_factor)
 
 	--y labels
 	local labels_y = obj.labels.y
@@ -935,12 +936,12 @@ local initLabelPlot = function(arg)
 		}
 	end
 	
-	LabelPlot.populate_y_labels(obj, _CR, y_input_factor)
+	LabelPlot.populate_y_labels(obj, CR_DUMMY, y_input_factor)
 
-	LabelPlot.position_x_intrvls(obj.plot, _CR)
-	LabelPlot.position_y_intrvls(obj.plot, _CR)
+	LabelPlot.position_x_intrvls(obj.plot, CR_DUMMY)
+	LabelPlot.position_y_intrvls(obj.plot, CR_DUMMY)
 	
-	LabelPlot.position_graph_outline(obj.plot, _CR)
+	LabelPlot.position_graph_outline(obj.plot, CR_DUMMY)
 
 	LabelPlot.position_x_labels(obj)
 	LabelPlot.position_y_labels(obj)

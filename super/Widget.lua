@@ -2,7 +2,6 @@ local M = {}
 
 local Super			= require 'Super'
 
-local _CR			= require 'CR'
 local util			= require 'util'
 local schema		= require 'default_patterns'
 
@@ -34,6 +33,11 @@ local __math_cos	= math.cos
 local __math_ceil	= math.ceil
 local __math_log	= math.log
 local __math_rad	= math.rad
+
+-- dummy drawing surface
+local cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1366, 768)
+local _CR = cairo_create(cs)
+cairo_surface_destroy(cs)
 
 --Box(x, y, [width], [height])
 
@@ -77,7 +81,7 @@ local initArc = function(arg)
 		y = y,
 		thickness = thickness,
 		cap = arg.cap or ARC_CAP,
-		path = Arc.create_path(x, y, radius, __math_rad(arg.theta0 or ARC_THETA0),
+		path = Arc.create_path(_CR, x, y, radius, __math_rad(arg.theta0 or ARC_THETA0),
 			__math_rad(arg.theta1 or ARC_THETA1)),
 		source = Super.Pattern{
 			pattern = arg.arc_pattern or ARC_PATTERN,
@@ -150,7 +154,7 @@ local initDial = function(arg)
 	obj._make_dial_path = util.memoize(
 		function(percent)
 			obj.dial_angle = (1 - percent) * theta0 + percent * theta1
-			return Arc.create_path(x, y, radius, theta0, obj.dial_angle)
+			return Arc.create_path(_CR, x, y, radius, theta0, obj.dial_angle)
 		end
 	)
 
@@ -221,7 +225,7 @@ local initPoly = function(arg)
 	
 	for i = 1, #arg do points[i] = arg[i] end
 	
-	obj.path = Poly.create_path(arg.closed, __unpack(points))
+	obj.path = Poly.create_path(_CR, arg.closed, __unpack(points))
 
 	obj.source = Super.Pattern{
 		pattern = line_pattern or POLY_LINE_PATTERN,
@@ -321,7 +325,7 @@ local initBar = function(arg)
 			local mp = obj.midpoint
 			mp.x = (p2_x - p1_x) * percent + p1_x
 			mp.y = (p2_y - p1_y) * percent + p1_y
-			return Poly.create_path(nil, p1, mp)
+			return Poly.create_path(_CR, nil, p1, mp)
 		end
 	)
 
@@ -826,9 +830,9 @@ local initPlot = function(arg)
 		}
 	}
 	
-	Plot.position_x_intrvls(obj)
-	Plot.position_y_intrvls(obj)
-	Plot.position_graph_outline(obj)
+	Plot.position_x_intrvls(obj, _CR)
+	Plot.position_y_intrvls(obj, _CR)
+	Plot.position_graph_outline(obj, _CR)
 
 	return obj
 end
@@ -933,10 +937,10 @@ local initLabelPlot = function(arg)
 	
 	LabelPlot.populate_y_labels(obj, _CR, y_input_factor)
 
-	LabelPlot.position_x_intrvls(obj.plot)
-	LabelPlot.position_y_intrvls(obj.plot)
+	LabelPlot.position_x_intrvls(obj.plot, _CR)
+	LabelPlot.position_y_intrvls(obj.plot, _CR)
 	
-	LabelPlot.position_graph_outline(obj.plot)
+	LabelPlot.position_graph_outline(obj.plot, _CR)
 
 	LabelPlot.position_x_labels(obj)
 	LabelPlot.position_y_labels(obj)

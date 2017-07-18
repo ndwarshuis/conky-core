@@ -1,7 +1,5 @@
 local M = {}
 
-local _CR = require 'CR'
-
 local __cairo_new_path  		= cairo_new_path
 local __cairo_arc 	   			= cairo_arc
 local __cairo_copy_path 		= cairo_copy_path
@@ -19,10 +17,12 @@ local draw = function(obj, cr)
 	__cairo_stroke(cr)
 end
 
-local create_path = function(x, y, radius, theta0, theta1)
-	__cairo_new_path(_CR)
-	__cairo_arc(_CR, x, y, radius, theta0, theta1)
-	return __cairo_copy_path(_CR)
+local create_path = function(cr, x, y, radius, theta0, theta1)
+	__cairo_new_path(cr)
+	__cairo_arc(cr, x, y, radius, theta0, theta1)
+	local path = __cairo_copy_path(cr)
+	__cairo_new_path(cr) -- clear path to keep it from reappearing
+	return path
 end
 
 M.draw = draw

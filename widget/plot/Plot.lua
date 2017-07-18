@@ -84,7 +84,7 @@ local draw = function(obj, cr)
 	__cairo_stroke(cr)
 end
 
-local position_x_intrvls = function(obj)
+local position_x_intrvls = function(obj, cr)
 	local y1 = obj.y - 0.5
 	local y2 = y1 + obj.height + 0.5
 	local x_intrvls = obj.intrvls.x
@@ -101,11 +101,11 @@ local position_x_intrvls = function(obj)
 		p2.x = x1
 		p2.y = y2
 		__cairo_path_destroy(x_intrvls[i])
-		x_intrvls[i] = Poly.create_path(nil, p1, p2)
+		x_intrvls[i] = Poly.create_path(cr, nil, p1, p2)
 	end
 end
 
-local position_y_intrvls = function(obj)
+local position_y_intrvls = function(obj, cr)
 	local x1 = obj.x-- + 0.5
 	local x2 = obj.x + obj.width-- + 0.5
 	local y_intrvls = obj.intrvls.y
@@ -120,11 +120,11 @@ local position_y_intrvls = function(obj)
 		p2.x = x2
 		p2.y = y1
 		__cairo_path_destroy(y_intrvls[i])
-		y_intrvls[i] = Poly.create_path(nil, p1, p2)
+		y_intrvls[i] = Poly.create_path(cr, nil, p1, p2)
 	end
 end
 
-local position_graph_outline = function(obj)
+local position_graph_outline = function(obj, cr)
 	local x1 = obj.x
 	local y1 = obj.y - 0.5
 	local x2 = obj.x + obj.width + 0.5
@@ -135,7 +135,7 @@ local position_graph_outline = function(obj)
 
 	__cairo_path_destroy(obj.outline.path)
 	
-	obj.outline.path = Poly.create_path(nil, p1, p2, p3)
+	obj.outline.path = Poly.create_path(cr, nil, p1, p2, p3)
 end
 
 M.draw = draw

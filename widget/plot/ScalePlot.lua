@@ -17,9 +17,9 @@ local scale_data = function(obj, cr, new_domain, new_factor)
 	obj.scale.factor = new_factor
 	LabelPlot.populate_y_labels(obj, cr, 1 / new_factor)
 	LabelPlot.position_x_labels(obj)
-	LabelPlot.position_x_intrvls(obj.plot)
-	LabelPlot.position_y_intrvls(obj.plot)
-	LabelPlot.position_graph_outline(obj.plot)
+	LabelPlot.position_x_intrvls(obj.plot, cr)
+	LabelPlot.position_y_intrvls(obj.plot, cr)
+	LabelPlot.position_graph_outline(obj.plot, cr)
 end
 
 local update = function(obj, cr, value)

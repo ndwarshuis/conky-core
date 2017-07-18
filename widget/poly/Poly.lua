@@ -1,7 +1,5 @@
 local M = {}
 
-local _CR = require 'CR'
-
 local __cairo_new_path 	    	= cairo_new_path
 local __cairo_move_to 	    	= cairo_move_to
 local __cairo_line_to 	    	= cairo_line_to
@@ -14,14 +12,15 @@ local __cairo_set_line_join  	= cairo_set_line_join
 local __cairo_set_source	    = cairo_set_source
 local __cairo_stroke		    = cairo_stroke
 
-local create_path = function(closed, ...)
-	__cairo_new_path(_CR)
-	__cairo_move_to(_CR, arg[1].x, arg[1].y)
-	for i = 2, #arg do
-		__cairo_line_to(_CR, arg[i].x, arg[i].y)
+local create_path = function(cr, closed, ...)
+	__cairo_new_path(cr)
+	for i = 1, #arg do
+		__cairo_line_to(cr, arg[i].x, arg[i].y)
 	end
-	if closed then __cairo_close_path(_CR) end
-	return __cairo_copy_path(_CR)
+	if closed then __cairo_close_path(cr) end
+	local path = __cairo_copy_path(cr)
+	__cairo_new_path(cr) -- clear path to keep it from reappearing
+	return path
 end
 
 local draw = function(obj, cr)

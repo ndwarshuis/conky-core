@@ -1,18 +1,18 @@
-local c = {}
+local M = {}
 
 local Poly = require 'Poly'
 
-local _CAIRO_APPEND_PATH    = cairo_append_path
-local _CAIRO_MOVE_TO    	= cairo_move_to
-local _CAIRO_LINE_TO    	= cairo_line_to
-local _CAIRO_SET_LINE_WIDTH = cairo_set_line_width
-local _CAIRO_SET_LINE_CAP   = cairo_set_line_cap
-local _CAIRO_SET_LINE_JOIN  = cairo_set_line_join
-local _CAIRO_SET_SOURCE	    = cairo_set_source
-local _CAIRO_FILL_PRESERVE  = cairo_fill_preserve
-local _CAIRO_STROKE		    = cairo_stroke
-local _CAIRO_PATH_DESTROY	= cairo_path_destroy
-local _TABLE_INSERT			= table.insert
+local __cairo_append_path 		= cairo_append_path
+local __cairo_move_to    		= cairo_move_to
+local __cairo_line_to    		= cairo_line_to
+local __cairo_set_line_width	= cairo_set_line_width
+local __cairo_set_line_cap   	= cairo_set_line_cap
+local __cairo_set_line_join  	= cairo_set_line_join
+local __cairo_set_source	    = cairo_set_source
+local __cairo_fill_preserve  	= cairo_fill_preserve
+local __cairo_stroke		    = cairo_stroke
+local __cairo_path_destroy		= cairo_path_destroy
+local __table_insert			= table.insert
 
 local DATA_THICKNESS = 1
 local DATA_CAP = CAIRO_LINE_CAP_BUTT
@@ -25,7 +25,7 @@ local OUTLINE_JOIN = CAIRO_LINE_JOIN_MITER
 
 local update = function(obj, value)
 	local data = obj.data
-	_TABLE_INSERT(data, 1, obj.y + obj.height * (1 - value))
+	__table_insert(data, 1, obj.y + obj.height * (1 - value))
 	if #data == data.n + 2 then data[#data] = nil end
 end
 
@@ -36,16 +36,16 @@ local draw = function(obj, cr)
 	local x_intrvls = intrvls.x
 	local y_intrvls = intrvls.y
 	
-	_CAIRO_SET_LINE_WIDTH(cr, INTRVL_THICKNESS)
-	_CAIRO_SET_LINE_CAP(cr, INTRVL_CAP)
-	_CAIRO_SET_SOURCE(cr, intrvls.source)
+	__cairo_set_line_width(cr, INTRVL_THICKNESS)
+	__cairo_set_line_cap(cr, INTRVL_CAP)
+	__cairo_set_source(cr, intrvls.source)
 	for i = 1, #x_intrvls do
-		_CAIRO_APPEND_PATH(cr, x_intrvls[i])
+		__cairo_append_path(cr, x_intrvls[i])
 	end
 	for i = 1, #y_intrvls do
-		_CAIRO_APPEND_PATH(cr, y_intrvls[i])
+		__cairo_append_path(cr, y_intrvls[i])
 	end
-	_CAIRO_STROKE(cr)
+	__cairo_stroke(cr)
 
 	--draw data on graph
 	local data = obj.data
@@ -53,40 +53,40 @@ local draw = function(obj, cr)
 	local spacing = obj.width / data.n
 	local right = obj.x + obj.width
 
-	_CAIRO_MOVE_TO(cr, right, data[1])
+	__cairo_move_to(cr, right, data[1])
 	
 	for i = 1, n do
-		_CAIRO_LINE_TO(cr, right - i * spacing, data[i+1])
+		__cairo_line_to(cr, right - i * spacing, data[i+1])
 	end
 	
 	if data.fill_source then
 		local bottom = obj.y + obj.height
-		_CAIRO_LINE_TO(cr, right - n * spacing, bottom)
-		_CAIRO_LINE_TO(cr, right, bottom)
-		_CAIRO_SET_SOURCE(cr, data.fill_source)
-		_CAIRO_FILL_PRESERVE(cr)
+		__cairo_line_to(cr, right - n * spacing, bottom)
+		__cairo_line_to(cr, right, bottom)
+		__cairo_set_source(cr, data.fill_source)
+		__cairo_fill_preserve(cr)
 	end
 	
-	_CAIRO_SET_LINE_WIDTH (cr, DATA_THICKNESS)
-	_CAIRO_SET_LINE_CAP(cr, DATA_CAP)
-	_CAIRO_SET_LINE_JOIN(cr, DATA_JOIN)
-	_CAIRO_SET_SOURCE(cr, data.line_source)
-	_CAIRO_STROKE(cr)
+	__cairo_set_line_width (cr, DATA_THICKNESS)
+	__cairo_set_line_cap(cr, DATA_CAP)
+	__cairo_set_line_join(cr, DATA_JOIN)
+	__cairo_set_source(cr, data.line_source)
+	__cairo_stroke(cr)
 
 	--draw graph outline (goes on top of everything)
 	local outline = obj.outline
 	
-	_CAIRO_APPEND_PATH(cr, outline.path)
-	_CAIRO_SET_LINE_WIDTH(cr, OUTLINE_THICKNESS)
-	_CAIRO_SET_LINE_JOIN(cr, OUTLINE_JOIN)
-	_CAIRO_SET_LINE_CAP(cr, OUTLINE_CAP)
-	_CAIRO_SET_SOURCE(cr, outline.source)
-	_CAIRO_STROKE(cr)
+	__cairo_append_path(cr, outline.path)
+	__cairo_set_line_width(cr, OUTLINE_THICKNESS)
+	__cairo_set_line_join(cr, OUTLINE_JOIN)
+	__cairo_set_line_cap(cr, OUTLINE_CAP)
+	__cairo_set_source(cr, outline.source)
+	__cairo_stroke(cr)
 end
 
 local position_x_intrvls = function(obj)
 	local y1 = obj.y - 0.5
-	local y2 = y1 + obj.height-- + 0.5
+	local y2 = y1 + obj.height + 0.5
 	local x_intrvls = obj.intrvls.x
 	local intrvl_width = obj.width / x_intrvls.n
 	local p1 = {x = 0, y = 0}
@@ -95,12 +95,12 @@ local position_x_intrvls = function(obj)
 	local obj_x = obj.x
 
 	for i = 1, x_intrvls.n do
-		local x1 = obj_x + intrvl_width * i-- + 0.5
+		local x1 = obj_x + intrvl_width * i - 0.5
 		p1.x = x1
 		p1.y = y1
 		p2.x = x1
 		p2.y = y2
-		_CAIRO_PATH_DESTROY(x_intrvls[i])
+		__cairo_path_destroy(x_intrvls[i])
 		x_intrvls[i] = Poly.create_path(nil, p1, p2)
 	end
 end
@@ -119,7 +119,7 @@ local position_y_intrvls = function(obj)
 		p1.y = y1
 		p2.x = x2
 		p2.y = y1
-		_CAIRO_PATH_DESTROY(y_intrvls[i])
+		__cairo_path_destroy(y_intrvls[i])
 		y_intrvls[i] = Poly.create_path(nil, p1, p2)
 	end
 end
@@ -133,15 +133,15 @@ local position_graph_outline = function(obj)
 	local p2 = {x = x1, y = y2}
 	local p3 = {x = x2, y = y2}
 
-	_CAIRO_PATH_DESTROY(obj.outline.path)
+	__cairo_path_destroy(obj.outline.path)
 	
 	obj.outline.path = Poly.create_path(nil, p1, p2, p3)
 end
 
-c.draw = draw
-c.update = update
-c.position_x_intrvls = position_x_intrvls
-c.position_y_intrvls = position_y_intrvls
-c.position_graph_outline = position_graph_outline
+M.draw = draw
+M.update = update
+M.position_x_intrvls = position_x_intrvls
+M.position_y_intrvls = position_y_intrvls
+M.position_graph_outline = position_graph_outline
 
-return c
+return M

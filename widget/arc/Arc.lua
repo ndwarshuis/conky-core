@@ -1,31 +1,31 @@
-local c = {}
+local M = {}
 
 local _CR = require 'CR'
 
-local _CAIRO_NEW_PATH  		= cairo_new_path
-local _CAIRO_ARC 	   		= cairo_arc
-local _CAIRO_COPY_PATH 		= cairo_copy_path
-local _CAIRO_APPEND_PATH 	= cairo_append_path
-local _CAIRO_SET_LINE_WIDTH = cairo_set_line_width
-local _CAIRO_SET_LINE_CAP 	= cairo_set_line_cap
-local _CAIRO_SET_SOURCE 	= cairo_set_source
-local _CAIRO_STROKE 		= cairo_stroke
+local __cairo_new_path  		= cairo_new_path
+local __cairo_arc 	   			= cairo_arc
+local __cairo_copy_path 		= cairo_copy_path
+local __cairo_append_path 		= cairo_append_path
+local __cairo_set_line_width 	= cairo_set_line_width
+local __cairo_set_line_cap 		= cairo_set_line_cap
+local __cairo_set_source 		= cairo_set_source
+local __cairo_stroke 			= cairo_stroke
 
 local draw = function(obj, cr)
-	_CAIRO_APPEND_PATH(cr, obj.path)
-	_CAIRO_SET_LINE_WIDTH(cr, obj.thickness)
-	_CAIRO_SET_LINE_CAP(cr, obj.cap)
-	_CAIRO_SET_SOURCE(cr, obj.source)
-	_CAIRO_STROKE(cr)
+	__cairo_append_path(cr, obj.path)
+	__cairo_set_line_width(cr, obj.thickness)
+	__cairo_set_line_cap(cr, obj.cap)
+	__cairo_set_source(cr, obj.source)
+	__cairo_stroke(cr)
 end
 
 local create_path = function(x, y, radius, theta0, theta1)
-	_CAIRO_NEW_PATH(_CR)
-	_CAIRO_ARC(_CR, x, y, radius, theta0, theta1)
-	return _CAIRO_COPY_PATH(_CR)
+	__cairo_new_path(_CR)
+	__cairo_arc(_CR, x, y, radius, theta0, theta1)
+	return __cairo_copy_path(_CR)
 end
 
-c.draw = draw
-c.create_path = create_path
+M.draw = draw
+M.create_path = create_path
 
-return c
+return M

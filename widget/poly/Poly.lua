@@ -1,39 +1,39 @@
-local c = {}
+local M = {}
 
 local _CR = require 'CR'
 
-local _CAIRO_NEW_PATH 	    = cairo_new_path
-local _CAIRO_MOVE_TO 	    = cairo_move_to
-local _CAIRO_LINE_TO 	    = cairo_line_to
-local _CAIRO_CLOSE_PATH     = cairo_close_path
-local _CAIRO_APPEND_PATH    = cairo_append_path
-local _CAIRO_COPY_PATH 	    = cairo_copy_path
-local _CAIRO_SET_LINE_WIDTH = cairo_set_line_width
-local _CAIRO_SET_LINE_CAP   = cairo_set_line_cap
-local _CAIRO_SET_LINE_JOIN  = cairo_set_line_join
-local _CAIRO_SET_SOURCE	    = cairo_set_source
-local _CAIRO_STROKE		    = cairo_stroke
+local __cairo_new_path 	    	= cairo_new_path
+local __cairo_move_to 	    	= cairo_move_to
+local __cairo_line_to 	    	= cairo_line_to
+local __cairo_close_path     	= cairo_close_path
+local __cairo_append_path    	= cairo_append_path
+local __cairo_copy_path			= cairo_copy_path
+local __cairo_set_line_width 	= cairo_set_line_width
+local __cairo_set_line_cap   	= cairo_set_line_cap
+local __cairo_set_line_join  	= cairo_set_line_join
+local __cairo_set_source	    = cairo_set_source
+local __cairo_stroke		    = cairo_stroke
 
 local create_path = function(closed, ...)
-	_CAIRO_NEW_PATH(_CR)
-	_CAIRO_MOVE_TO(_CR, arg[1].x, arg[1].y)
+	__cairo_new_path(_CR)
+	__cairo_move_to(_CR, arg[1].x, arg[1].y)
 	for i = 2, #arg do
-		_CAIRO_LINE_TO(_CR, arg[i].x, arg[i].y)
+		__cairo_line_to(_CR, arg[i].x, arg[i].y)
 	end
-	if closed then _CAIRO_CLOSE_PATH(_CR) end
-	return _CAIRO_COPY_PATH(_CR)
+	if closed then __cairo_close_path(_CR) end
+	return __cairo_copy_path(_CR)
 end
 
 local draw = function(obj, cr)
-	_CAIRO_APPEND_PATH(cr, obj.path)
-	_CAIRO_SET_LINE_WIDTH(cr, obj.thickness)
-	_CAIRO_SET_LINE_JOIN(cr, obj.join)
-	_CAIRO_SET_LINE_CAP(cr, obj.cap)
-	_CAIRO_SET_SOURCE(cr, obj.source)
-	_CAIRO_STROKE(cr)
+	__cairo_append_path(cr, obj.path)
+	__cairo_set_line_width(cr, obj.thickness)
+	__cairo_set_line_join(cr, obj.join)
+	__cairo_set_line_cap(cr, obj.cap)
+	__cairo_set_source(cr, obj.source)
+	__cairo_stroke(cr)
 end
 
-c.create_path = create_path
-c.draw = draw
+M.create_path = create_path
+M.draw = draw
 
-return c
+return M

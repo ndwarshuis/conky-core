@@ -1,31 +1,31 @@
-local c = {}
+local M = {}
 
-local _IMLIB_LOAD_IMAGE    				= imlib_load_image
-local _IMLIB_CONTEXT_SET_IMAGE 			= imlib_context_set_image
-local _IMLIB_RENDER_IMAGE_ON_DRAWABLE  	= imlib_render_image_on_drawable
-local _IMLIB_FREE_IMAGE    				= imlib_free_image
-local _IMLIB_IMAGE_GET_WIDTH			= imlib_image_get_width
-local _IMLIB_IMAGE_GET_HEIGHT			= imlib_image_get_height
+local __imlib_load_image    			= imlib_load_image
+local __imlib_context_set_image 		= imlib_context_set_image
+local __imlib_render_image_on_drawable  = imlib_render_image_on_drawable
+local __imlib_free_image    			= imlib_free_image
+local __imlib_image_get_width			= imlib_image_get_width
+local __imlib_image_get_height			= imlib_image_get_height
 
 local set = function(obj, path)
-	local img = _IMLIB_LOAD_IMAGE(path)
-	_IMLIB_CONTEXT_SET_IMAGE(img)
+	local img = __imlib_load_image(path)
+	__imlib_context_set_image(img)
 
-	obj.width = _IMLIB_IMAGE_GET_WIDTH()
-	obj.height = _IMLIB_IMAGE_GET_HEIGHT()
+	obj.width = __imlib_image_get_width()
+	obj.height = __imlib_image_get_height()
 	obj.path = path
 
-	_IMLIB_FREE_IMAGE()
+	__imlib_free_image()
 end
 
 local draw = function(obj)
-	local img = _IMLIB_LOAD_IMAGE(obj.path)
-	_IMLIB_CONTEXT_SET_IMAGE(img)
-	_IMLIB_RENDER_IMAGE_ON_DRAWABLE(obj.x, obj.y)
-	_IMLIB_FREE_IMAGE()
+	local img = __imlib_load_image(obj.path)
+	__imlib_context_set_image(img)
+	__imlib_render_image_on_drawable(obj.x, obj.y)
+	__imlib_free_image()
 end
 
-c.set = set
-c.draw = draw
+M.set = set
+M.draw = draw
 
-return c
+return M

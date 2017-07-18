@@ -1,24 +1,24 @@
-local c = {}
+local M = {}
 
-local _CAIRO_APPEND_PATH    = cairo_append_path
-local _CAIRO_SET_LINE_WIDTH = cairo_set_line_width
-local _CAIRO_SET_LINE_JOIN  = cairo_set_line_join
-local _CAIRO_SET_SOURCE	    = cairo_set_source
-local _CAIRO_FILL_PRESERVE  = cairo_fill_preserve
-local _CAIRO_STROKE		    = cairo_stroke
+local __cairo_append_path    	= cairo_append_path
+local __cairo_set_line_width 	= cairo_set_line_width
+local __cairo_set_line_join  	= cairo_set_line_join
+local __cairo_set_source		= cairo_set_source
+local __cairo_fill_preserve  	= cairo_fill_preserve
+local __cairo_stroke		    = cairo_stroke
 
 local draw = function(obj, cr)
-	_CAIRO_APPEND_PATH(cr, obj.path)
-	_CAIRO_SET_LINE_WIDTH(cr, obj.thickness)
-	_CAIRO_SET_LINE_JOIN(cr, obj.join)
+	__cairo_append_path(cr, obj.path)
+	__cairo_set_line_width(cr, obj.thickness)
+	__cairo_set_line_join(cr, obj.join)
 	
-	_CAIRO_SET_SOURCE(cr, obj.fill_source)
-	_CAIRO_FILL_PRESERVE(cr)
+	__cairo_set_source(cr, obj.fill_source)
+	__cairo_fill_preserve(cr)
 
-	_CAIRO_SET_SOURCE(cr, obj.source)
-	_CAIRO_STROKE(cr)
+	__cairo_set_source(cr, obj.source)
+	__cairo_stroke(cr)
 end
 
-c.draw = draw
+M.draw = draw
 
-return c
+return M

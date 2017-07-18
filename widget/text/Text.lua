@@ -1,30 +1,30 @@
-local c = {}
+local M = {}
 
-local _STRING_SUB				= string.sub
-local _CAIRO_SET_FONT_FACE 		= cairo_set_font_face
-local _CAIRO_SET_FONT_SIZE 		= cairo_set_font_size
-local _CAIRO_SET_SOURCE	   		= cairo_set_source
-local _CAIRO_MOVE_TO       		= cairo_move_to
-local _CAIRO_SHOW_TEXT     		= cairo_show_text
-local _CAIRO_TEXT_EXTENTS  		= cairo_text_extents
+local __string_sub			= string.sub
+local __cairo_set_font_face	= cairo_set_font_face
+local __cairo_set_font_size = cairo_set_font_size
+local __cairo_set_source	= cairo_set_source
+local __cairo_move_to       = cairo_move_to
+local __cairo_show_text     = cairo_show_text
+local __cairo_text_extents  = cairo_text_extents
 
 local te = cairo_text_extents_t:create()
 tolua.takeownership(te)
 
 local trim_to_length = function(text, len)
 	if #text > len then
-		return _STRING_SUB(text, 1, len)..'...'
+		return __string_sub(text, 1, len)..'...'
 	else
 		return text
 	end
 end
 
 local draw = function(obj, cr)
-	_CAIRO_SET_FONT_FACE(cr, obj.font_face)
-	_CAIRO_SET_FONT_SIZE(cr, obj.font_size)
-	_CAIRO_SET_SOURCE(cr, obj.current_source)
-	_CAIRO_MOVE_TO(cr, obj.x, obj.y)
-	_CAIRO_SHOW_TEXT(cr, obj.text)
+	__cairo_set_font_face(cr, obj.font_face)
+	__cairo_set_font_size(cr, obj.font_size)
+	__cairo_set_source(cr, obj.current_source)
+	__cairo_move_to(cr, obj.x, obj.y)
+	__cairo_show_text(cr, obj.text)
 end
 
 local set = function(obj, cr, text)
@@ -38,9 +38,9 @@ local set = function(obj, cr, text)
 			local x_align = obj.x_align
 			local te = te
 			
-			_CAIRO_SET_FONT_SIZE(cr, obj.font_size)
-			_CAIRO_SET_FONT_FACE(cr, obj.font_face)
-			_CAIRO_TEXT_EXTENTS(cr, text, te)
+			__cairo_set_font_size(cr, obj.font_size)
+			__cairo_set_font_face(cr, obj.font_face)
+			__cairo_text_extents(cr, text, te)
 			
 			obj.width = te.width
 			
@@ -74,11 +74,11 @@ local move_to = function(obj, x, y)
 	move_to_Y(obj, y)
 end
 
-c.trim_to_length = trim_to_length
-c.set = set
-c.draw = draw
-c.move_to = move_to
-c.move_to_x = move_to_x
-c.move_to_y = move_to_y
+M.trim_to_length = trim_to_length
+M.set = set
+M.draw = draw
+M.move_to = move_to
+M.move_to_x = move_to_x
+M.move_to_y = move_to_y
 
-return c
+return M

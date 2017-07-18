@@ -1,10 +1,10 @@
-local c = {}
+local M = {}
 
 local Arc = require 'Arc'
 
-local _CAIRO_SET_SOURCE  = cairo_set_source
-local _CAIRO_STROKE 	 = cairo_stroke
-local _CAIRO_APPEND_PATH = cairo_append_path
+local __cairo_set_source  	= cairo_set_source
+local __cairo_stroke 	 	= cairo_stroke
+local __cairo_append_path 	= cairo_append_path
 
 local set = function(obj, percent)
 	obj.percent = percent
@@ -19,12 +19,12 @@ end
 
 local draw = function(obj, cr)
 	Arc.draw(obj, cr)
-	_CAIRO_SET_SOURCE(cr, obj.current_source)
-	_CAIRO_APPEND_PATH(cr, obj.dial_path)
-	_CAIRO_STROKE(cr)
+	__cairo_set_source(cr, obj.current_source)
+	__cairo_append_path(cr, obj.dial_path)
+	__cairo_stroke(cr)
 end
 
-c.set = set
-c.draw = draw
+M.set = set
+M.draw = draw
 
-return c
+return M

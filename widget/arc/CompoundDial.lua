@@ -1,12 +1,12 @@
-local c = {}
+local M = {}
 
 local Dial = require 'Dial'
 
-local _CAIRO_SET_LINE_WIDTH = cairo_set_line_width
-local _CAIRO_SET_LINE_CAP 	= cairo_set_line_cap
-local _CAIRO_SET_SOURCE   	= cairo_set_source
-local _CAIRO_STROKE 	  	= cairo_stroke
-local _CAIRO_APPEND_PATH  	= cairo_append_path
+local __cairo_set_line_width 	= cairo_set_line_width
+local __cairo_set_line_cap 		= cairo_set_line_cap
+local __cairo_set_source   		= cairo_set_source
+local __cairo_stroke 	  		= cairo_stroke
+local __cairo_append_path  		= cairo_append_path
 
 local set = function(obj, index, percent)
 	Dial.set(obj.dials[index], percent)
@@ -14,21 +14,21 @@ end
 
 local draw = function(obj, cr)
 	local dials = obj.dials
-	_CAIRO_SET_LINE_WIDTH(cr, dials[1].thickness)
-	_CAIRO_SET_LINE_CAP(cr, dials[1].cap)
+	__cairo_set_line_width(cr, dials[1].thickness)
+	__cairo_set_line_cap(cr, dials[1].cap)
 	
 	for i = 1, #dials do
 		local current_dial = dials[i]
-		_CAIRO_SET_SOURCE(cr, current_dial.source)
-		_CAIRO_APPEND_PATH(cr, current_dial.path)
-		_CAIRO_STROKE(cr)
-		_CAIRO_SET_SOURCE(cr, current_dial.current_source)
-		_CAIRO_APPEND_PATH(cr, current_dial.dial_path)
-		_CAIRO_STROKE(cr)
+		__cairo_set_source(cr, current_dial.source)
+		__cairo_append_path(cr, current_dial.path)
+		__cairo_stroke(cr)
+		__cairo_set_source(cr, current_dial.current_source)
+		__cairo_append_path(cr, current_dial.dial_path)
+		__cairo_stroke(cr)
 	end
 end
 
-c.set = set
-c.draw = draw
+M.set = set
+M.draw = draw
 
-return c
+return M

@@ -1,10 +1,10 @@
-local c = {}
+local M = {}
 
-local _CAIRO_APPEND_PATH    = cairo_append_path
-local _CAIRO_SET_LINE_WIDTH = cairo_set_line_width
-local _CAIRO_SET_LINE_CAP   = cairo_set_line_cap
-local _CAIRO_SET_SOURCE	    = cairo_set_source
-local _CAIRO_STROKE		    = cairo_stroke
+local __cairo_append_path		= cairo_append_path
+local __cairo_set_line_width 	= cairo_set_line_width
+local __cairo_set_line_cap   	= cairo_set_line_cap
+local __cairo_set_source	    = cairo_set_source
+local __cairo_stroke		    = cairo_stroke
 
 local set = function(obj, percent)
 	obj.percent = percent
@@ -18,19 +18,19 @@ local set = function(obj, percent)
 end
 
 local draw = function(obj, cr)
-	_CAIRO_SET_LINE_WIDTH(cr, obj.thickness)
-	_CAIRO_SET_LINE_CAP(cr, obj.cap)
+	__cairo_set_line_width(cr, obj.thickness)
+	__cairo_set_line_cap(cr, obj.cap)
 	
-	_CAIRO_APPEND_PATH(cr, obj.path)
-	_CAIRO_SET_SOURCE(cr, obj.source)
-	_CAIRO_STROKE(cr)
+	__cairo_append_path(cr, obj.path)
+	__cairo_set_source(cr, obj.source)
+	__cairo_stroke(cr)
 
-	_CAIRO_APPEND_PATH(cr, obj.bar_path)
-	_CAIRO_SET_SOURCE(cr, obj.current_source)
-	_CAIRO_STROKE(cr)
+	__cairo_append_path(cr, obj.bar_path)
+	__cairo_set_source(cr, obj.current_source)
+	__cairo_stroke(cr)
 end
 
-c.set = set
-c.draw = draw
+M.set = set
+M.draw = draw
 
-return c
+return M

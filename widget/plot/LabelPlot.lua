@@ -1,14 +1,14 @@
-local c = {}
+local M = {}
 
-local Plot 		= require 'Plot'
-local Text 		= require 'Text'
+local Plot = require 'Plot'
+local Text = require 'Text'
 
-local _CAIRO_SET_SOURCE	    = cairo_set_source
-local _CAIRO_SET_FONT_FACE 	= cairo_set_font_face
-local _CAIRO_SET_FONT_SIZE 	= cairo_set_font_size
-local _CAIRO_MOVE_TO       	= cairo_move_to
-local _CAIRO_SHOW_TEXT     	= cairo_show_text
-local _CAIRO_STROKE		    = cairo_stroke
+local __cairo_set_source	= cairo_set_source
+local __cairo_set_font_face = cairo_set_font_face
+local __cairo_set_font_size = cairo_set_font_size
+local __cairo_move_to       = cairo_move_to
+local __cairo_show_text     = cairo_show_text
+local __cairo_stroke		= cairo_stroke
 
 local X_LABEL_PAD = 8
 local Y_LABEL_PAD = 5
@@ -18,20 +18,20 @@ local draw = function(obj, cr)
 	local labels_y = obj.labels.y
 	local labels_x_1 = labels_x[1]
 
-	_CAIRO_SET_FONT_FACE(cr, labels_x_1.font_face)
-	_CAIRO_SET_FONT_SIZE(cr, labels_x_1.font_size)
-	_CAIRO_SET_SOURCE(cr, labels_x_1.source)
+	__cairo_set_font_face(cr, labels_x_1.font_face)
+	__cairo_set_font_size(cr, labels_x_1.font_size)
+	__cairo_set_source(cr, labels_x_1.source)
 	
 	for i = 1, #labels_x do
 		local current_label = labels_x[i]
-		_CAIRO_MOVE_TO(cr, current_label.x, current_label.y)
-		_CAIRO_SHOW_TEXT(cr, current_label.text)
+		__cairo_move_to(cr, current_label.x, current_label.y)
+		__cairo_show_text(cr, current_label.text)
 	end
 
 	for i = 1, #labels_y do
 		local current_label = labels_y[i]
-		_CAIRO_MOVE_TO(cr, current_label.x, current_label.y)
-		_CAIRO_SHOW_TEXT(cr, current_label.text)
+		__cairo_move_to(cr, current_label.x, current_label.y)
+		__cairo_show_text(cr, current_label.text)
 	end
 
 	Plot.draw(obj.plot, cr)
@@ -97,14 +97,14 @@ local update = function(obj, value)
 	Plot.update(obj.plot, value)
 end
 
-c.update = update
-c.draw = draw
-c.position_x_intrvls = Plot.position_x_intrvls
-c.position_y_intrvls = Plot.position_y_intrvls
-c.position_graph_outline = Plot.position_graph_outline
-c.populate_x_labels = populate_x_labels
-c.populate_y_labels = populate_y_labels
-c.position_x_labels = position_x_labels
-c.position_y_labels = position_y_labels
+M.update = update
+M.draw = draw
+M.position_x_intrvls = Plot.position_x_intrvls
+M.position_y_intrvls = Plot.position_y_intrvls
+M.position_graph_outline = Plot.position_graph_outline
+M.populate_x_labels = populate_x_labels
+M.populate_y_labels = populate_y_labels
+M.position_x_labels = position_x_labels
+M.position_y_labels = position_y_labels
 
-return c
+return M

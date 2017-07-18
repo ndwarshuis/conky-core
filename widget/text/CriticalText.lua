@@ -1,12 +1,12 @@
-local c = {}
+local M = {}
 
 local Text = require 'Text'
 
-local _TONUMBER = tonumber
+local __tonumber = tonumber
 
 local set = function(obj, cr, text, force)
 	if text and text ~= obj.pretext then
-		obj.value = _TONUMBER(text) or 0
+		obj.value = __tonumber(text) or 0
 
 		if force == 0 then
 			obj.current_source = obj.critical.source
@@ -23,7 +23,7 @@ local set = function(obj, cr, text, force)
 	end
 end
 
-c.draw = Text.draw
-c.set = set
+M.draw = Text.draw
+M.set = set
 
-return c
+return M

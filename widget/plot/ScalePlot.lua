@@ -1,9 +1,9 @@
-local c = {}
+local M = {}
 
 local LabelPlot = require 'LabelPlot'
 
-local _TABLE_INSERT	= table.insert
-local _TABLE_REMOVE	= table.remove
+local __table_insert	= table.insert
+local __table_remove	= table.remove
 
 local __scale_data = function(obj, cr, new_domain, new_factor)
 	local y = obj.y
@@ -34,7 +34,7 @@ local update = function(obj, cr, value)
 		local current_timer = timers[i]
 		current_timer.remaining = current_timer.remaining - 1
 		if current_timer.remaining == 0 then
-			_TABLE_REMOVE(timers, i)
+			__table_remove(timers, i)
 			n = n - 1
 		end
 	end
@@ -43,7 +43,7 @@ local update = function(obj, cr, value)
 	if new_domain > scale.previous_domain then						--zap all timers less than/equal to s
 		for i = n, 1, -1 do
 			if timers[i].domain <= new_domain then
-				_TABLE_REMOVE(timers, i)
+				__table_remove(timers, i)
 				n = n - 1
 			end
 		end
@@ -73,7 +73,7 @@ local update = function(obj, cr, value)
 	
 	local data = obj.plot.data
 
-	_TABLE_INSERT(data, 1, obj.y + obj.plot.height * (1 - value * scale.factor))
+	__table_insert(data, 1, obj.y + obj.plot.height * (1 - value * scale.factor))
 	if #data == data.n + 2 then data[#data] = nil end
 	--~ print('----------------------------------------------------------------------')
 	--~ print('value', value, 'f', scale.factor, 's', scale.domain, 'curr_s', scale.previous_domain)
@@ -83,7 +83,7 @@ local update = function(obj, cr, value)
 	--~ print('length', #timers)
 end
 
-c.draw = LabelPlot.draw
-c.update = update
+M.draw = LabelPlot.draw
+M.update = update
 
-return c
+return M

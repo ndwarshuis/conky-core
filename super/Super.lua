@@ -1,10 +1,10 @@
-local c = {}
+local M = {}
 
 local Gradient 	= require 'Gradient'
 local schema	= require 'default_patterns'
 
-local _TONUMBER = tonumber
-local _STRING_SUB = string.sub
+local __tonumber 	= tonumber
+local __string_sub 	= string.sub
 
 --Pattern(pattern, [p1], [p2], [r1], [r2], [key])
 local initPattern = function(arg)
@@ -27,9 +27,9 @@ end
 local CRITICAL_PATTERN = schema.red
 local CRITICAL_LIMIT = '>80'
 
-local CRITICAL_CREATE_FUNCTION = function(limit)
-	local compare = limit and _STRING_SUB(limit, 1, 1)
-	local value = limit and _TONUMBER(_STRING_SUB(limit, 2))
+local create_critical_function = function(limit)
+	local compare = limit and __string_sub(limit, 1, 1)
+	local value = limit and __tonumber(__string_sub(limit, 2))
 
 	if compare == '>' then return function(n) return (n > value) end end
 	if compare == '<' then return function(n) return (n < value) end end
@@ -46,13 +46,13 @@ local initCritical = function(arg)
 			r1 		= arg.r1,
 			r2 		= arg.r2,
 		},
-		enabled = CRITICAL_CREATE_FUNCTION(arg.critical_limit or CRITICAL_LIMIT)
+		enabled = create_critical_function(arg.critical_limit or CRITICAL_LIMIT)
 	}
 
 	return obj
 end
 
-c.Pattern = initPattern
-c.Critical = initCritical
+M.Pattern = initPattern
+M.Critical = initCritical
 
-return c
+return M

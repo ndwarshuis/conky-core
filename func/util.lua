@@ -17,12 +17,6 @@ local __conky_parse		= conky_parse
 local __select			= select
 local __setmetatable 	= setmetatable
 
-local copy_table = function(t)
-	local s = {}
-	for i, v in __pairs(t) do s[i] = __type(v) == 'table' and copy_table(v) or v end
-	return s
-end
-
 local round = function(x, places)
     local m = 10 ^ (places or 0)
     if x >= 0 then
@@ -163,7 +157,6 @@ end
 M.round = round
 M.get_bytes_power = get_bytes_power
 M.convert_bytes = convert_bytes
-M.copy_table = copy_table
 M.conky = conky
 M.round_to_string = round_to_string
 M.precision_round_to_string = precision_round_to_string

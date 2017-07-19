@@ -1,7 +1,7 @@
 local M = {}
 
 local Gradient 	= require 'Gradient'
-local schema	= require 'default_patterns'
+local schema	= require 'Patterns'
 
 local __tonumber 	= tonumber
 local __string_sub 	= string.sub

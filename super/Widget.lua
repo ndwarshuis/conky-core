@@ -3,7 +3,7 @@ local M = {}
 local Super			= require 'Super'
 
 local util			= require 'util'
-local schema		= require 'default_patterns'
+local schema		= require 'Patterns'
 
 local Arc			= require 'Arc'
 local Dial			= require 'Dial'

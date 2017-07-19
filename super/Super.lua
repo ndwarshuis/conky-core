@@ -1,7 +1,7 @@
 local M = {}
 
 local Gradient 	= require 'Gradient'
-local schema	= require 'Patterns'
+local Patterns	= require 'Patterns'
 
 local __tonumber 	= tonumber
 local __string_sub 	= string.sub
@@ -24,7 +24,7 @@ end
 
 --Critical([critical_pattern], [critical_limit], [p1], [p2], [r1], [r2])
 
-local CRITICAL_PATTERN = schema.RED
+local CRITICAL_PATTERN = Patterns.RED
 local CRITICAL_LIMIT = '>80'
 
 local create_critical_function = function(limit)

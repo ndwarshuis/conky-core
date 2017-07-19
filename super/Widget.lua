@@ -2,7 +2,7 @@ local M = {}
 
 local Super			= require 'Super'
 
-local util			= require 'util'
+local Util			= require 'Util'
 local Patterns		= require 'Patterns'
 
 local Arc			= require 'Arc'
@@ -152,7 +152,7 @@ local initDial = function(arg)
 	theta0 = __math_rad(theta0)
 	theta1 = __math_rad(theta1)
 
-	obj._make_dial_path = util.memoize(
+	obj._make_dial_path = Util.memoize(
 		function(percent)
 			obj.dial_angle = (1 - percent) * theta0 + percent * theta1
 			return Arc.create_path(CR_DUMMY, x, y, radius, theta0, obj.dial_angle)
@@ -321,7 +321,7 @@ local initBar = function(arg)
 
 	obj.midpoint = {}
 	
-	obj._make_bar_path = util.memoize(
+	obj._make_bar_path = Util.memoize(
 		function(percent)
 			local mp = obj.midpoint
 			mp.x = (p2_x - p1_x) * percent + p1_x
@@ -902,7 +902,7 @@ local initLabelPlot = function(arg)
 	local labels_x = obj.labels.x
 	
 	labels_x._func = x_label_func or function(fraction)
-		return util.round((1-fraction) * seconds)..'s'
+		return Util.round((1-fraction) * seconds)..'s'
 	end
 
 	for i = 1, labels_x.n do
@@ -960,12 +960,12 @@ local SCALEPLOT_BASE = 2			--base for log scale
 local SCALEPLOT_INITIAL = 1		--initial scale domain value
 
 local SCALEPLOT_Y_LABEL_FUNCTION = function(kilobytes)
-	local new_unit = util.get_unit_base_K(kilobytes)
-	local converted_bytes = util.convert_bytes(kilobytes, 'KiB', new_unit)
+	local new_unit = Util.get_unit_base_K(kilobytes)
+	local converted_bytes = Util.convert_bytes(kilobytes, 'KiB', new_unit)
 	local precision = 0
 	if converted_bytes < 10 then precision = 1 end
 	
-	return util.round_to_string(converted_bytes, precision)..' '..new_unit..'/s'
+	return Util.round_to_string(converted_bytes, precision)..' '..new_unit..'/s'
 end
 
 local initScalePlot = function(arg)

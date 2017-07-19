@@ -571,8 +571,8 @@ CriticalText(x, y, [text], [font_size], [x_align], [y_align], [text_color], [fon
 	[slant], [weight], [append_front], [append_end], [critical_color], [critical_limit])
 ]]
 
-local CRITICALTEXT_COLOR = schema.blue
-local CRITICALTEXT_CRITICAL_COLOR = schema.red
+local CRITICALTEXT_COLOR = schema.BLUE
+local CRITICALTEXT_CRITICAL_COLOR = schema.RED
 
 local initCriticalText = function(arg)
 
@@ -671,7 +671,7 @@ local TABLE_SEPARATOR_CAP = CAIRO_LINE_CAP_BUTT
 
 local TABLE_NUM_ROWS = 5
 local TABLE_MAX_LENGTH = 8
-local TABLE_HEADER_COLOR = schema.blue
+local TABLE_HEADER_COLOR = schema.BLUE
 local TABLE_BODY_COLOR = schema.LIGHT_GREY
 local TABLE_LINE_PATTERN = schema.DARK_GREY
 local TABLE_SEPARATOR_PATTERN = schema.DARK_GREY

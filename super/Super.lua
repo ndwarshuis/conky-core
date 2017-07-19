@@ -24,7 +24,7 @@ end
 
 --Critical([critical_pattern], [critical_limit], [p1], [p2], [r1], [r2])
 
-local CRITICAL_PATTERN = schema.red
+local CRITICAL_PATTERN = schema.RED
 local CRITICAL_LIMIT = '>80'
 
 local create_critical_function = function(limit)

@@ -37,7 +37,7 @@ local initGradient = function(arg)
 	
 	for i = 1, #arg do obj.color_stops[i] = arg[i] end
 
-	Gradient(obj, arg.p1, arg.p2, arg.r1, arg.r2)
+	Gradient.set_dimensions(obj, arg.p1, arg.p2, arg.r1, arg.r2)
 
 	return obj
 end

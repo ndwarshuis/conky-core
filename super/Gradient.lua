@@ -1,3 +1,5 @@
+local M = {}
+
 local __cairo_pattern_create_radial 		= cairo_pattern_create_radial
 local __cairo_pattern_create_linear 		= cairo_pattern_create_linear
 local __cairo_pattern_add_color_stop_rgba 	= cairo_pattern_add_color_stop_rgba
@@ -17,4 +19,6 @@ local set_dimensions = function(gradient, p1, p2, r1, r2)
 	end
 end
 
-return set_dimensions
+M.set_dimensions = set_dimensions
+
+return M

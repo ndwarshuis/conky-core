@@ -16,7 +16,7 @@ local initPattern = function(arg)
 	local r2 		= arg.r2
 	
 	if p1 and p2 and pattern and pattern.ptype == 'Gradient' then		
-		Gradient(pattern, p1, p2, r1, r2)
+		Gradient.set_dimensions(pattern, p1, p2, r1, r2)
 	end
 
 	return pattern.userdata

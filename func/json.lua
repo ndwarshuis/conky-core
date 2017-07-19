@@ -1,147 +1,114 @@
-local c = {}
+local M = {}
 
-local _STRING_GSUB 	= string.gsub
-local _STRING_CHAR 	= string.char
-local _STRING_FIND 	= string.find
-local _STRING_SUB 	= string.sub
-local _TABLE_CONCAT = table.concat
-local _MATH_FLOOR 	= math.floor
-local _PAIRS 		= pairs
-local _TONUMBER 	= tonumber
+local __string_gsub 	= string.gsub
+local __string_char 	= string.char
+local __string_find 	= string.find
+local __string_sub 		= string.sub
+local __table_concat 	= table.concat
+local __math_floor 		= math.floor
+local __pairs 			= pairs
+local __tonumber 		= tonumber
 
 local decode -- to ref this before definition
 
-local decode_scanWhitespace = function(s, startPos)
+local decode_scan_whitespace = function(s, start_pos)
 	local whitespace = " \n\r\t"
-	local stringLen = #s
+	local string_len = #s
 	
-	while (_STRING_FIND(whitespace, _STRING_SUB(s, startPos, startPos), 1, true) and
-	  startPos <= stringLen) do
-		startPos = startPos + 1
+	while (__string_find(whitespace, __string_sub(s, start_pos, start_pos), 1, true) and
+	  start_pos <= string_len) do
+		start_pos = start_pos + 1
 	end
-	return startPos
+	return start_pos
 end
 
-local decode_scanArray = function(s, startPos)
+local decode_scan_array = function(s, start_pos)
 	local array = {}
-	local stringLen = #s
+	local string_len = #s
 	
-	--~ assert(_STRING_SUB(s, startPos, startPos) == '[',
-	  --~ 'decode_scanArray called but array does not start at position ' .. startPos ..
-	  --~ ' in string:\n'..s )
-
-	startPos = startPos + 1
+	start_pos = start_pos + 1
 
 	repeat
-		startPos = decode_scanWhitespace(s, startPos)
-		--~ assert(startPos <= stringLen, 'JSON String ended unexpectedly scanning array.')
+		start_pos = decode_scan_whitespace(s, start_pos)
 		
-		local curChar = _STRING_SUB(s,startPos,startPos)
+		local cur_char = __string_sub(s,start_pos,start_pos)
 		
-		if (curChar == ']') then
-			return array, startPos + 1
+		if (cur_char == ']') then
+			return array, start_pos + 1
 		end
 		
-		if (curChar == ',') then
-			startPos = decode_scanWhitespace(s, startPos + 1)
+		if (cur_char == ',') then
+			start_pos = decode_scan_whitespace(s, start_pos + 1)
 		end
 		
-		--~ assert(startPos <= stringLen, 'JSON String ended unexpectedly scanning array.')
-		object, startPos = decode(s, startPos)
+		object, start_pos = decode(s, start_pos)
 		array[#array + 1] = object
 	until false
 end
 
-local decode_scanComment = function(s, startPos)
-	--~ assert(_STRING_SUB(s, startPos, startPos + 1) == '/*',
-	  --~ "decode_scanComment called but comment does not start at position " .. startPos)
-		
-	local endPos = _STRING_FIND(s, '*/', startPos + 2)
-	--~ assert(endPos ~= nil, "Unterminated comment in string at " .. startPos)
-	return endPos + 2
+local decode_scan_comment = function(s, start_pos)
+	local end_pos = __string_find(s, '*/', start_pos + 2)
+	return end_pos + 2
 end
 
-local decode_scanConstant = function(s, startPos)
+local decode_scan_constant = function(s, start_pos)
 	local consts = {["true"] = true, ["false"] = false,	["null"] = nil}
-	local constNames = {"true", "false", "null"}
+	local const_names = {"true", "false", "null"}
 	
-	for _, k in _PAIRS(constNames) do
-		if _STRING_SUB(s, startPos, startPos + #k - 1 ) == k then
-			return consts[k], startPos + #k
+	for _, k in __pairs(const_names) do
+		if __string_sub(s, start_pos, start_pos + #k - 1 ) == k then
+			return consts[k], start_pos + #k
 		end
 	end
-	--~ assert(nil, 'Failed to scan constant from string ' .. s .. ' at starting position ' ..
-	  --~ startPos)
 end
 
-local decode_scanNumber = function(s, startPos)
-	local endPos = startPos + 1
-	local stringLen = #s
-	local acceptableChars = "+-0123456789.e"
+local decode_scan_number = function(s, start_pos)
+	local end_pos = start_pos + 1
+	local string_len = #s
+	local acceptable_chars = "+-0123456789.e"
 	
-	while (_STRING_FIND(acceptableChars, _STRING_SUB(s, endPos, endPos), 1, true)
-	  and endPos <= stringLen) do
-		endPos = endPos + 1
+	while (__string_find(acceptable_chars, __string_sub(s, end_pos, end_pos), 1, true)
+	  and end_pos <= string_len) do
+		end_pos = end_pos + 1
 	end
 
-	local numberString = _STRING_GSUB(_STRING_SUB(s, startPos, endPos - 1), '+', '')
-	return _TONUMBER(numberString), endPos
+	local number_string = __string_gsub(__string_sub(s, start_pos, end_pos - 1), '+', '')
+	return __tonumber(number_string), end_pos
 end
 
-local decode_scanObject = function(s, startPos)
+local decode_scan_object = function(s, start_pos)
 	local object = {}
-	local stringLen = #s
+	local string_len = #s
 	local key, value
 	
-	--~ assert(_STRING_SUB(s, startPos, startPos) == '{',
-	  --~ 'decode_scanObject called but object does not start at position ' .. startPos ..
-	  --~ ' in string:\n' .. s)
-	  
-	startPos = startPos + 1
+	start_pos = start_pos + 1
 	
 	repeat
-		startPos = decode_scanWhitespace(s, startPos)
+		start_pos = decode_scan_whitespace(s, start_pos)
 		
-		--~ assert(startPos <= stringLen, 'JSON string ended unexpectedly while scanning object.')
+		local cur_char = __string_sub(s, start_pos, start_pos)
 		
-		local curChar = _STRING_SUB(s, startPos, startPos)
-		
-		if (curChar == '}') then
-			return object, startPos + 1
+		if (cur_char == '}') then
+			return object, start_pos + 1
 		end
 		
-		if (curChar == ',') then
-			startPos = decode_scanWhitespace(s, startPos + 1)
+		if (cur_char == ',') then
+			start_pos = decode_scan_whitespace(s, start_pos + 1)
 		end
-		
-		--~ assert(startPos <= stringLen, 'JSON string ended unexpectedly scanning object.')
 		
 		-- Scan the key
-		key, startPos = decode(s, startPos)
+		key, start_pos = decode(s, start_pos)
 		
-		--~ assert(startPos <= stringLen,
-		  --~ 'JSON string ended unexpectedly searching for value of key ' .. key)
-			
-		startPos = decode_scanWhitespace(s, startPos)
-		
-		--~ assert(startPos <= stringLen,
-		  --~ 'JSON string ended unexpectedly searching for value of key ' .. key)
-			
-		--~ assert(_STRING_SUB(s, startPos, startPos) == ':',
-		  --~ 'JSON object key-value assignment mal-formed at ' .. startPos)
-			
-		startPos = decode_scanWhitespace(s, startPos + 1)
+		start_pos = decode_scan_whitespace(s, start_pos)
+		start_pos = decode_scan_whitespace(s, start_pos + 1)
 
-		--~ assert(startPos <= stringLen,
-		  --~ 'JSON string ended unexpectedly searching for value of key ' .. key)
-			
-		value, startPos = decode(s, startPos)
+		value, start_pos = decode(s, start_pos)
 		
 		object[key] = value
 	until false
 end
 
-local escapeSequences = {
+local escape_sequences = {
 	["\\t"] = "\t",
 	["\\f"] = "\f",
 	["\\r"] = "\r",
@@ -149,97 +116,79 @@ local escapeSequences = {
 	["\\b"] = "\b"
 }
 
-setmetatable(escapeSequences, {__index = function(t, k)	return _STRING_SUB(k, 2) end})--skip "\"
+setmetatable(escape_sequences, {__index = function(t, k) return __string_sub(k, 2) end})--skip "\"
 
-local decode_scanString = function (s, startPos)
-	--~ assert(startPos, 'decode_scanString(..) called without start position')
-	
-	local startChar = _STRING_SUB(s, startPos, startPos)
-	
-	--~ assert(startChar == [["]] or startChar == [[']],
-	  --~ 'decode_scanString called for a non-string')
+local decode_scan_string = function (s, start_pos)
+	local start_char = __string_sub(s, start_pos, start_pos)
 	
 	local t = {}
-	local i, j = startPos, startPos
+	local i, j = start_pos, start_pos
 	
-	while _STRING_FIND(s, startChar, j + 1) ~= j + 1 do
+	while __string_find(s, start_char, j + 1) ~= j + 1 do
 		local oldj = j
-		local x, y = _STRING_FIND(s, startChar, oldj + 1)
+		local x, y = __string_find(s, start_char, oldj + 1)
 		
-		i, j = _STRING_FIND(s, "\\.", j + 1)
+		i, j = __string_find(s, "\\.", j + 1)
 		
 		if not i or x < i then i, j = x, y - 1 end
+
+		t[#t + 1] = __string_sub(s, oldj + 1, i - 1)
 		
-		--~ table.insert(t, _STRING_SUB(s, oldj + 1, i - 1))
-		t[#t + 1] = _STRING_SUB(s, oldj + 1, i - 1)
-		
-		if _STRING_SUB(s, i, j) == "\\u" then
-			local a = _STRING_SUB(s, j + 1, j + 4)
-			local n = _TONUMBER(a, 16)
+		if __string_sub(s, i, j) == "\\u" then
+			local a = __string_sub(s, j + 1, j + 4)
+			local n = __tonumber(a, 16)
 			local x
 			
 			j = j + 4
 			
-			--~ assert(n, "String decoding failed: bad Unicode escape " .. a .. " at position " ..
-			  --~ i .. " : " .. j)
-				
 			if n < 0x80 then
-				x = _STRING_CHAR(n % 0x80)
+				x = __string_char(n % 0x80)
 			elseif n < 0x800 then
-				x = _STRING_CHAR(0xC0 + (_MATH_FLOOR(n / 64) % 0x20), 0x80 + (n % 0x40))
+				x = __string_char(0xC0 + (__math_floor(n / 64) % 0x20), 0x80 + (n % 0x40))
 			else
-				x = _STRING_CHAR(0xE0 + (_MATH_FLOOR(n / 4096) % 0x10), 0x80 +
-				  (_MATH_FLOOR(n / 64) % 0x40), 0x80 + (n % 0x40))
+				x = __string_char(0xE0 + (__math_floor(n / 4096) % 0x10), 0x80 +
+				  (__math_floor(n / 64) % 0x40), 0x80 + (n % 0x40))
 			end
 		
-			--~ table.insert(t, x)
 			t[#t + 1] = x
 		else
-			--~ table.insert(t, escapeSequences[_STRING_SUB(s, i, j)])
-			t[#t + 1] = escapeSequences[_STRING_SUB(s, i, j)]
+			t[#t + 1] = escape_sequences[__string_sub(s, i, j)]
 		end
 	end
-	--~ table.insert(t, _STRING_SUB(j, j + 1))
-	t[#t + 1] = _STRING_SUB(j, j + 1)
+	t[#t + 1] = __string_sub(j, j + 1)
 	
-	--~ assert(_STRING_FIND(s, startChar, j + 1), "String decoding failed: missing closing " ..
-	  --~ startChar .. " at position " .. j .. "(for string at position " .. startPos .. ")")
-		
-	return _TABLE_CONCAT(t, ""), j + 2
+	return __table_concat(t, ""), j + 2
 end
 
-decode = function(s, startPos)
-	startPos = startPos or 1
-	startPos = decode_scanWhitespace(s, startPos)
+decode = function(s, start_pos)
+	start_pos = start_pos or 1
+	start_pos = decode_scan_whitespace(s, start_pos)
 	
-	--~ assert(startPos <= #s,
-	  --~ 'Unterminated JSON encoded object found at position in [' .. s .. ']')
-		
-	local curChar = _STRING_SUB(s, startPos, startPos)
+	local cur_char = __string_sub(s, start_pos, start_pos)
 	
-	if curChar == '{' then
-		return decode_scanObject(s, startPos)
+	if cur_char == '{' then
+		return decode_scan_object(s, start_pos)
 	end
 	
-	if curChar == '[' then
-		return decode_scanArray(s, startPos)
+	if cur_char == '[' then
+		return decode_scan_array(s, start_pos)
 	end
 
-	if _STRING_FIND("+-0123456789.e", curChar, 1, true) then
-		return decode_scanNumber(s, startPos)
+	if __string_find("+-0123456789.e", cur_char, 1, true) then
+		return decode_scan_number(s, start_pos)
 	end
 
-	if curChar == [["]] or curChar == [[']] then
-		return decode_scanString(s, startPos)
+	if cur_char == [["]] or cur_char == [[']] then
+		return decode_scan_string(s, start_pos)
 	end
 
-	if _STRING_SUB(s, startPos, startPos + 1) == '/*' then
-		return decode(s, decode_scanComment(s, startPos))
+	if __string_sub(s, start_pos, start_pos + 1) == '/*' then
+		return decode(s, decode_scan_comment(s, start_pos))
 	end
 
-	return decode_scanConstant(s, startPos)
+	return decode_scan_constant(s, start_pos)
 end
 
-c.decode = decode
+M.decode = decode
 
-return c
+return M

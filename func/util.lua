@@ -1,34 +1,34 @@
-local c = {}
+local M = {}
 
-local _PAIRS 			= pairs
-local _TYPE 			= type
-local _TONUMBER			= tonumber
-local _TOSTRING			= tostring
-local _IO_POPEN 		= io.popen
-local _IO_OPEN 			= io.open
-local _MATH_FLOOR 		= math.floor
-local _MATH_CEIL 		= math.ceil
-local _STRING_SUB 		= string.sub
-local _STRING_GSUB 		= string.gsub
-local _STRING_MATCH 	= string.match
-local _STRING_FORMAT 	= string.format
-local _STRING_UPPER 	= string.upper
-local _CONKY_PARSE		= conky_parse
-local _SELECT			= select
-local _SETMETATABLE 	= setmetatable
+local __pairs 			= pairs
+local __type 			= type
+local __tonumber		= tonumber
+local __tostring		= tostring
+local __io_popen 		= io.popen
+local __io_open 		= io.open
+local __math_floor 		= math.floor
+local __math_ceil 		= math.ceil
+local __string_sub 		= string.sub
+local __string_gsub 	= string.gsub
+local __string_match 	= string.match
+local __string_format 	= string.format
+local __string_upper 	= string.upper
+local __conky_parse		= conky_parse
+local __select			= select
+local __setmetatable 	= setmetatable
 
 local copy_table = function(t)
 	local s = {}
-	for i, v in _PAIRS(t) do s[i] = _TYPE(v) == 'table' and copy_table(v) or v end
+	for i, v in __pairs(t) do s[i] = __type(v) == 'table' and copy_table(v) or v end
 	return s
 end
 
 local round = function(x, places)
     local m = 10 ^ (places or 0)
     if x >= 0 then
-		return _MATH_FLOOR(x * m + 0.5) / m
+		return __math_floor(x * m + 0.5) / m
 	else
-		return _MATH_CEIL(x * m - 0.5) / m
+		return __math_ceil(x * m - 0.5) / m
 	end
 end
 
@@ -43,7 +43,7 @@ end
 
 local convert_bytes = function(x, old_unit, new_unit)
 	if old_unit == new_unit then
-		return _TONUMBER(x)
+		return __tonumber(x)
 	else
 		return x * 2 ^ (get_bytes_power(old_unit) - get_bytes_power(new_unit))
 	end
@@ -52,7 +52,7 @@ end
 local round_to_string = function(x, places)
 	places = places or 0
 	local y = round(x, places)
-	if places > 0 then return _STRING_FORMAT('%.'..places..'f', y) else return _TOSTRING(y) end
+	if places > 0 then return __string_format('%.'..places..'f', y) else return __tostring(y) end
 end
 
 local precision_round_to_string = function(x, sig_fig)
@@ -77,12 +77,12 @@ local read_entire_file = function(file, regex, mode)
 	local str = file:read(mode or '*a')
 	file:close()
 	if not str then return '' end
-	if regex then return _STRING_MATCH(str, regex) or '' else return str end
+	if regex then return __string_match(str, regex) or '' else return str end
 end
 
 local conky = function(expr, regex)
-	local ans = _CONKY_PARSE(expr)
-	if regex then return _STRING_MATCH(ans, regex) or '' else return ans end
+	local ans = __conky_parse(expr)
+	if regex then return __string_match(ans, regex) or '' else return ans end
 end
 
 local precision_convert_bytes = function(val, old_unit, new_unit, sig_fig)
@@ -106,11 +106,11 @@ local get_unit_base_K = function(kilobytes)
 end
 
 local parse_unit = function(str)
-	return _STRING_MATCH(str, '^([%d%p]-)(%a+)')
+	return __string_match(str, '^([%d%p]-)(%a+)')
 end
 
 local char_count = function(str, char)
-	return _SELECT(2, _STRING_GSUB(str, char, char))
+	return __select(2, __string_gsub(str, char, char))
 end
 
 local line_count = function(str)
@@ -118,15 +118,15 @@ local line_count = function(str)
 end
 
 local execute_cmd = function(cmd, regex, mode)
-	return read_entire_file(_IO_POPEN(cmd), regex, mode)
+	return read_entire_file(__io_popen(cmd), regex, mode)
 end
 
 local read_file = function(path, regex, mode)
-	return read_entire_file(_IO_OPEN(path, 'rb'), regex, mode)
+	return read_entire_file(__io_open(path, 'rb'), regex, mode)
 end
 
 local write_file = function(path, str)
-	local file = _IO_OPEN(path, 'w+')
+	local file = __io_open(path, 'w+')
 	if file then
 		file:write(str)
 		file:close()
@@ -134,12 +134,12 @@ local write_file = function(path, str)
 end
 
 local conky_numeric = function(expr, regex)
-	return _TONUMBER(conky(expr, regex)) or 0
+	return __tonumber(conky(expr, regex)) or 0
 end
 
 local memoize = function(f)
 	local mem = {} -- memoizing table
-	_SETMETATABLE(mem, {__mode = "kv"}) -- make it weak
+	__setmetatable(mem, {__mode = "kv"}) -- make it weak
 	return function (x) 	-- new version of ’f’, with memoizing
 		local r = mem[x]
 		if not r then 		-- no previous result?
@@ -153,32 +153,32 @@ end
 local convert_unix_time = function(unix_time, frmt)
 	local cmd = 'date -d @'..unix_time
 	if frmt then cmd = cmd..' +\''..frmt..'\'' end
-	return _STRING_MATCH(execute_cmd(cmd), '(.-)\n')
+	return __string_match(execute_cmd(cmd), '(.-)\n')
 end
 
 local capitalize_each_word = function(str)
-	return _STRING_SUB(_STRING_GSUB(" "..str, "%W%l", _STRING_UPPER), 2)
+	return __string_sub(__string_gsub(" "..str, "%W%l", __string_upper), 2)
 end
 
-c.round = round
-c.get_bytes_power = get_bytes_power
-c.convert_bytes = convert_bytes
-c.copy_table = copy_table
-c.conky = conky
-c.round_to_string = round_to_string
-c.precision_round_to_string = precision_round_to_string
-c.precision_convert_bytes = precision_convert_bytes
-c.get_unit = get_unit
-c.get_unit_base_K = get_unit_base_K
-c.parse_unit = parse_unit
-c.char_count = char_count
-c.line_count = line_count
-c.execute_cmd = execute_cmd
-c.read_file = read_file
-c.write_file = write_file
-c.conky_numeric = conky_numeric
-c.memoize = memoize
-c.convert_unix_time = convert_unix_time
-c.capitalize_each_word = capitalize_each_word
+M.round = round
+M.get_bytes_power = get_bytes_power
+M.convert_bytes = convert_bytes
+M.copy_table = copy_table
+M.conky = conky
+M.round_to_string = round_to_string
+M.precision_round_to_string = precision_round_to_string
+M.precision_convert_bytes = precision_convert_bytes
+M.get_unit = get_unit
+M.get_unit_base_K = get_unit_base_K
+M.parse_unit = parse_unit
+M.char_count = char_count
+M.line_count = line_count
+M.execute_cmd = execute_cmd
+M.read_file = read_file
+M.write_file = write_file
+M.conky_numeric = conky_numeric
+M.memoize = memoize
+M.convert_unix_time = convert_unix_time
+M.capitalize_each_word = capitalize_each_word
 
-return c
+return M

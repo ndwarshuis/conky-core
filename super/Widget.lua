@@ -68,7 +68,7 @@ local ARC_CAP = CAIRO_LINE_CAP_BUTT
 local ARC_THICKNESS = 2
 local ARC_THETA0 = 0
 local ARC_THETA1 = 360
-local ARC_PATTERN = schema.dark_grey
+local ARC_PATTERN = schema.DARK_GREY
 
 local initArc = function(arg)
 
@@ -104,9 +104,9 @@ Dial([x], [y], radius, [thickness], [theta0], [theta1], [arc_pattern], [cap],
 local DIAL_THICKNESS = 4
 local DIAL_THETA0 = 90
 local DIAL_THETA1 = 360
-local DIAL_ARC_PATTERN = schema.grey_rounded
-local DIAL_DIAL_PATTERN = schema.blue_rounded
-local DIAL_CRITICAL_PATTERN = schema.red_rounded
+local DIAL_ARC_PATTERN = schema.GREY_ROUNDED
+local DIAL_DIAL_PATTERN = schema.BLUE_ROUNDED
+local DIAL_CRITICAL_PATTERN = schema.RED_ROUNDED
 local DIAL_CRITICAL_LIMIT = '>80'
 
 local initDial = function(arg)
@@ -211,7 +211,7 @@ end
 local POLY_THICKNESS = 1
 local POLY_CAP = CAIRO_LINE_CAP_BUTT
 local POLY_JOIN = CAIRO_LINE_JOIN_MITER
-local POLY_LINE_PATTERN = schema.mid_grey
+local POLY_LINE_PATTERN = schema.MID_GREY
 
 local initPoly = function(arg)
 
@@ -240,7 +240,7 @@ end
 --Line(p1, p2, [thickness], [line_pattern], [cap])
 
 local LINE_THICKNESS = 1
-local LINE_PATTERN = schema.dark_grey
+local LINE_PATTERN = schema.DARK_GREY
 local LINE_CAP = CAIRO_LINE_CAP_BUTT
 
 local initLine = function(arg)
@@ -270,9 +270,9 @@ Bar(p1, p2, [thickness], [line_pattern], [indicator_pattern], [critical_pattern]
 local BAR_THICKNESS = 10
 local BAR_CRITICAL_LIMIT = '>80'
 local BAR_CAP = CAIRO_LINE_CAP_BUTT
-local BAR_LINE_PATTERN = schema.grey_rounded
-local BAR_INDICATOR_PATTERN = schema.blue_rounded
-local BAR_CRITICAL_PATTERN = schema.red_rounded
+local BAR_LINE_PATTERN = schema.GREY_ROUNDED
+local BAR_INDICATOR_PATTERN = schema.BLUE_ROUNDED
+local BAR_CRITICAL_PATTERN = schema.RED_ROUNDED
 
 local initBar = function(arg)
 
@@ -396,7 +396,7 @@ end
 
 --Rect(x, y, [width], [height], [thickness], [join], [line_pattern])
 
-local RECT_LINE_PATTERN = schema.mid_grey
+local RECT_LINE_PATTERN = schema.MID_GREY
 local RECT_LINE_THICKNESS = 1
 local RECT_LINE_JOIN = CAIRO_LINE_JOIN_MITER
 
@@ -514,7 +514,7 @@ local TEXT_Y_ALIGN = 'center'
 local TEXT_FONT = 'Neuropolitical'
 local TEXT_FONT_SLANT = CAIRO_FONT_SLANT_NORMAL
 local TEXT_FONT_WEIGHT = CAIRO_FONT_WEIGHT_NORMAL
-local TEXT_COLOR = schema.light_grey
+local TEXT_COLOR = schema.LIGHT_GREY
 
 local fe = cairo_font_extents_t:create()
 tolua.takeownership(fe)
@@ -672,9 +672,9 @@ local TABLE_SEPARATOR_CAP = CAIRO_LINE_CAP_BUTT
 local TABLE_NUM_ROWS = 5
 local TABLE_MAX_LENGTH = 8
 local TABLE_HEADER_COLOR = schema.blue
-local TABLE_BODY_COLOR = schema.light_grey
-local TABLE_LINE_PATTERN = schema.dark_grey
-local TABLE_SEPARATOR_PATTERN = schema.dark_grey
+local TABLE_BODY_COLOR = schema.LIGHT_GREY
+local TABLE_LINE_PATTERN = schema.DARK_GREY
+local TABLE_SEPARATOR_PATTERN = schema.DARK_GREY
 
 local initTable = function(arg)
 
@@ -767,10 +767,10 @@ Plot([x], [y], width, height, [seconds], [num_x_intrvl], [num_y_intrvl],
 local PLOT_SECONDS = 90
 local PLOT_NUM_X_INTERVAL = 9
 local PLOT_NUM_Y_INTERVAL = 4
-local PLOT_OUTLINE_PATTERN = schema.dark_grey
-local PLOT_INTRVL_PATTERN = schema.dark_grey
-local PLOT_DATA_LINE_PATTERN = schema.transparent_blue
-local PLOT_DATA_FILL_PATTERN = schema.transparent_blue
+local PLOT_OUTLINE_PATTERN = schema.DARK_GREY
+local PLOT_INTRVL_PATTERN = schema.DARK_GREY
+local PLOT_DATA_LINE_PATTERN = schema.TRANSPARENT_BLUE
+local PLOT_DATA_FILL_PATTERN = schema.TRANSPARENT_BLUE
 
 local initPlot = function(arg)
 
@@ -848,7 +848,7 @@ local LABELPLOT_LABEL_SIZE = 8
 local LABELPLOT_LABEL_FONT = "Neuropolitical"
 local LABELPLOT_LABEL_SLANT = CAIRO_FONT_SLANT_NORMAL
 local LABELPLOT_LABEL_WEIGHT = CAIRO_FONT_WEIGHT_NORMAL
-local LABELPLOT_LABEL_COLOR = schema.mid_grey
+local LABELPLOT_LABEL_COLOR = schema.MID_GREY
 local LABELPLOT_SECONDS = 90
 local LABELPLOT_NUM_X_INTERVAL = 9
 local LABELPLOT_NUM_Y_INTERVAL = 4
@@ -1021,10 +1021,10 @@ local HEADER_FONT_SLANT = CAIRO_FONT_SLANT_NORMAL
 local HEADER_FONT_WEIGHT = CAIRO_FONT_WEIGHT_BOLD
 local HEADER_X_ALIGN = 'left'
 local HEADER_Y_ALIGN = 'top'
-local HEADER_COLOR = schema.white
+local HEADER_COLOR = schema.WHITE
 local HEADER_UNDERLINE_OFFSET = -20
 local HEADER_UNDERLINE_THICKNESS = 3
-local HEADER_UNDERLINE_COLOR = schema.white
+local HEADER_UNDERLINE_COLOR = schema.WHITE
 local HEADER_UNDERLINE_CAP = CAIRO_LINE_CAP_ROUND
 
 local initHeader = function(arg)
@@ -1063,8 +1063,8 @@ end
 
 --Panel{x, y, width, height}
 
-local PANEL_LINE_PATTERN = schema.dark_grey
-local PANEL_FILL_PATTERN = schema.transparent_black
+local PANEL_LINE_PATTERN = schema.DARK_GREY
+local PANEL_FILL_PATTERN = schema.TRANSPARENT_BLACK
 
 local initPanel = function(arg)
 

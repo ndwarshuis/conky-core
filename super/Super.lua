@@ -2,6 +2,7 @@ local M = {}
 
 local Gradient 	= require 'Gradient'
 local Patterns	= require 'Patterns'
+local Util		= require 'Util'
 
 local __tonumber 	= tonumber
 local __string_sub 	= string.sub
@@ -54,5 +55,7 @@ end
 
 M.Pattern = initPattern
 M.Critical = initCritical
+
+M = Util.set_finalizer(M, function() print('Cleaning up Super.lua') end)
 
 return M

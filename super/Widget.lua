@@ -1101,4 +1101,9 @@ M.ScalePlot = initScalePlot
 M.Header = initHeader
 M.Panel = initPanel
 
+M = Util.set_finalizer(M, function()
+	print('Cleaning up Widget.lua')
+	cairo_destroy(CR_DUMMY)
+end)
+
 return M

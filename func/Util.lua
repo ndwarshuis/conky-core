@@ -15,6 +15,7 @@ local __string_format 	= string.format
 local __string_upper 	= string.upper
 local __conky_parse		= conky_parse
 local __select			= select
+local __getmetatable 	= getmetatable
 local __setmetatable 	= setmetatable
 
 local round = function(x, places)
@@ -154,6 +155,13 @@ local capitalize_each_word = function(str)
 	return __string_sub(__string_gsub(" "..str, "%W%l", __string_upper), 2)
 end
 
+function set_finalizer(tbl, gc_function)
+	local prox = newproxy(true)
+	__getmetatable(prox).__gc = gc_function or function() print("cleaning up:", tbl) end
+	tbl[prox] = true
+	return tbl
+end
+
 M.round = round
 M.get_bytes_power = get_bytes_power
 M.convert_bytes = convert_bytes
@@ -173,5 +181,6 @@ M.conky_numeric = conky_numeric
 M.memoize = memoize
 M.convert_unix_time = convert_unix_time
 M.capitalize_each_word = capitalize_each_word
+M.set_finalizer = set_finalizer
 
 return M

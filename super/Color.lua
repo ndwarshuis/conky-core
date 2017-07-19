@@ -1,6 +1,7 @@
 local M = {}
 
-local Gradient = require 'Gradient'
+local Gradient 	= require 'Gradient'
+local Util 		= require 'Util'
 
 local __cairo_pattern_create_rgba = cairo_pattern_create_rgba
 
@@ -45,5 +46,7 @@ end
 M.init = init
 M.ColorStop = initColorStop
 M.Gradient = initGradient
+
+M = Util.set_finalizer(M, function() print('Cleaning up Color.lua') end)
 
 return M

@@ -4,14 +4,12 @@ local Text = require 'Text'
 
 local __tonumber = tonumber
 
-local set = function(obj, cr, text, force)
+local set = function(obj, cr, text, is_overridden)
 	if text and text ~= obj.pretext then
 		obj.value = __tonumber(text) or 0
 
-		if force == 0 then
+		if is_overridden then
 			obj.current_source = obj.critical.source
-		elseif force == 1 then
-			obj.current_source = obj.source
 		else
 			if obj.critical.enabled(obj.value) then
 				obj.current_source = obj.critical.source

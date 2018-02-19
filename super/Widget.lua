@@ -761,7 +761,10 @@ end
 
 --[[
 Plot([x], [y], width, height, [seconds], [num_x_intrvl], [num_y_intrvl],
-	[outline_pattern], [intrvl_pattern], [data_line_pattern], [data_fill_pattern])
+	[outline_pattern], [intrvl_pattern], [data_pattern])
+
+where data_pattern is a table of form {line_pattern, fill_pattern} where
+either can be nil to omit
 ]]
 
 local PLOT_SECONDS = 90
@@ -769,8 +772,7 @@ local PLOT_NUM_X_INTERVAL = 9
 local PLOT_NUM_Y_INTERVAL = 4
 local PLOT_OUTLINE_PATTERN = Patterns.DARK_GREY
 local PLOT_INTRVL_PATTERN = Patterns.DARK_GREY
-local PLOT_DATA_LINE_PATTERN = Patterns.TRANSPARENT_BLUE
-local PLOT_DATA_FILL_PATTERN = Patterns.TRANSPARENT_BLUE
+local DATA_PATTERN = {Patterns.PLOT_LINE_BLUE, Patterns.PLOT_FILL_BLUE}
 
 local initPlot = function(arg)
 
@@ -812,24 +814,34 @@ local initPlot = function(arg)
 		},
 		
 	}
-
-	local data_fill_pattern	= arg.data_fill_pattern	or PLOT_DATA_FILL_PATTERN
+	
 	local seconds = arg.seconds or PLOT_SECONDS
 
-	obj.data = {
-		line_source = Super.Pattern{
-			pattern = arg.data_line_pattern or PLOT_DATA_LINE_PATTERN,
-			p1 = p1,
-			p2 = p2
-		},
-		seconds = seconds,
-		n = seconds * _G_INIT_DATA_.UPDATE_INTERVAL,
-		fill_source = data_fill_pattern and Super.Pattern{
-			pattern = data_fill_pattern,
-			p1 = p1,
-			p2 = p2
-		}
-	}
+	local _create_data_pattern = function(data_pattern)
+	   local line_pattern = data_pattern[1]
+	   local fill_pattern = data_pattern[2]
+	   return {
+		  line_source = line_pattern and Super.Pattern{
+			 pattern = line_pattern,
+			 p1 = p1,
+			 p2 = p2
+													  },
+		  fill_source = fill_pattern and Super.Pattern{
+			 pattern = fill_pattern,
+			 p1 = p1,
+			 p2 = p2,
+													  },
+	   }
+	end
+
+	obj.data = {seconds = seconds, num_points = seconds * _G_INIT_DATA_.UPDATE_INTERVAL}
+	if #arg == 0 then
+	   obj.data[1] = _create_data_pattern(DATA_PATTERN)
+	else
+	   for i = 1, #arg do
+		  obj.data[i] = _create_data_pattern(arg[i])
+	   end
+	end
 	
 	Plot.position_x_intrvls(obj, CR_DUMMY)
 	Plot.position_y_intrvls(obj, CR_DUMMY)
@@ -853,6 +865,7 @@ local LABELPLOT_SECONDS = 90
 local LABELPLOT_NUM_X_INTERVAL = 9
 local LABELPLOT_NUM_Y_INTERVAL = 4
 
+-- TODO make patterns a variable argument which specifies the number of input values
 local initLabelPlot = function(arg)
 
 	local x					= arg.x
@@ -885,8 +898,7 @@ local initLabelPlot = function(arg)
 		num_y_intrvl 		= num_y_intrvl,
 		outline_pattern 	= arg.outline_pattern,
 		intrvl_pattern 		= arg.intrvl_pattern,
-		data_line_pattern 	= arg.data_line_pattern,
-		data_fill_pattern 	= arg.data_fill_pattern
+		unpack(arg)
 	}
 
 	obj.labels = {
@@ -968,6 +980,7 @@ local SCALEPLOT_Y_LABEL_FUNCTION = function(kilobytes)
 	return Util.round_to_string(converted_bytes, precision)..' '..new_unit..'/s'
 end
 
+-- TODO make patterns a variable argument which specifies the number of input values
 local initScalePlot = function(arg)
 
 	local base = arg.scaleplot_base or SCALEPLOT_BASE
@@ -985,10 +998,9 @@ local initScalePlot = function(arg)
 		num_y_intrvl 		= arg.num_y_intrvl,
 		outline_pattern 	= arg.outline_pattern,
 		intrvl_pattern 		= arg.intrvl_pattern,
-		data_line_pattern 	= arg.data_line_pattern,
-		data_fill_pattern 	= arg.data_fill_pattern,
 		label_color 		= arg.label_color,
-		y_input_factor		= base ^ initial
+		y_input_factor		= base ^ initial,
+		unpack(arg)
 	}
 	
 	obj.scale = {

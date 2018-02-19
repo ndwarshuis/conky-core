@@ -11,10 +11,10 @@ local init = function(arg)
 	local hex_rgba = arg.hex_rgba
 
 	local obj = {
-		r = ((hex_rgba / 0x1000000) % 0x100) / 255.,
-		g = ((hex_rgba / 0x10000) % 0x100) / 255.,
-		b = ((hex_rgba / 0x100) % 0x100) / 255.,
-		a = arg.force_alpha or (hex_rgba % 0x100) / 255.
+		r = ((hex_rgba / 0x10000) % 0x100) / 255.,
+		g = ((hex_rgba / 0x100) % 0x100) / 255.,
+		b = (hex_rgba % 0x100) / 255.,
+		a = arg.alpha or 1.0
 	}
 	obj.userdata = __cairo_pattern_create_rgba(obj.r, obj.g, obj.b, obj.a)
 
@@ -24,7 +24,7 @@ end
 --ColorStop(hex_rgba, stop, [force_alpha])
 local initColorStop = function(arg)
 
-	local obj = init{hex_rgba = arg.hex_rgba, force_alpha = arg.force_alpha}
+	local obj = init{hex_rgba = arg.hex_rgba, alpha = arg.alpha}
 	
 	obj.stop = arg.stop
 

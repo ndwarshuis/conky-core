@@ -4,6 +4,7 @@ local LabelPlot = require 'LabelPlot'
 
 local __table_insert	= table.insert
 local __table_remove	= table.remove
+local __math_max        = math.max
 
 local scale_data = function(obj, cr, new_domain, new_factor)
 	local y = obj.y
@@ -11,7 +12,10 @@ local scale_data = function(obj, cr, new_domain, new_factor)
 	local data = obj.plot.data
 	local h = obj.plot.height
 	for i = 1, #data do
-		data[i] = y + h * (1 - (1 - (data[i] - y) / h) * (new_factor / current_factor))
+	   local series = data[i]
+	   for j = 1, #series do
+		  series[j] = y + h * (1 - (1 - (series[j] - y) / h) * (new_factor / current_factor))
+	   end
 	end
 	obj.scale.domain = new_domain
 	obj.scale.factor = new_factor
@@ -22,9 +26,9 @@ local scale_data = function(obj, cr, new_domain, new_factor)
 	LabelPlot.position_graph_outline(obj.plot, cr)
 end
 
-local update = function(obj, cr, value)
-	local scale = obj.scale
-	local new_domain, new_factor = obj.scale._func(value)
+local update = function(obj, cr, ...)
+   local scale = obj.scale
+   local new_domain, new_factor = obj.scale._func(__math_max(unpack(arg)))
 	
 	--###tick/tock timers
 	
@@ -51,7 +55,7 @@ local update = function(obj, cr, value)
 		timers[n + 1] = {
 			domain = scale.previous_domain,
 			factor = scale.previous_factor,
-			remaining = obj.plot.data.n
+			remaining = obj.plot.data.num_points
 		}
 		n = n + 1
 	end
@@ -73,8 +77,11 @@ local update = function(obj, cr, value)
 	
 	local data = obj.plot.data
 
-	__table_insert(data, 1, obj.y + obj.plot.height * (1 - value * scale.factor))
-	if #data == data.n + 2 then data[#data] = nil end
+	for i = 1, #arg do
+	   local series = data[i]
+	   __table_insert(series, 1, obj.y + obj.plot.height * (1 - arg[i] * scale.factor))
+	   if #series == data.num_points + 2 then series[#series] = nil end
+	end
 	--~ print('----------------------------------------------------------------------')
 	--~ print('value', value, 'f', scale.factor, 's', scale.domain, 'curr_s', scale.previous_domain)
 	--~ for i, v in pairs(timers) do

@@ -23,10 +23,13 @@ local OUTLINE_THICKNESS = 2
 local OUTLINE_CAP = CAIRO_LINE_CAP_BUTT
 local OUTLINE_JOIN = CAIRO_LINE_JOIN_MITER
 
-local update = function(obj, value)
-	local data = obj.data
-	__table_insert(data, 1, obj.y + obj.height * (1 - value))
-	if #data == data.n + 2 then data[#data] = nil end
+local update = function(obj, ...)
+   local data = obj.data
+   for i = 1, #arg do
+	  local series = data[i]
+	  __table_insert(series, 1, obj.y + obj.height * (1 - arg[i]))
+	  if #series == data.num_points + 2 then series[#series] = nil end
+	end
 end
 
 local draw = function(obj, cr)
@@ -49,30 +52,48 @@ local draw = function(obj, cr)
 
 	--draw data on graph
 	local data = obj.data
-	local n = #data - 1
-	local spacing = obj.width / data.n
-	local right = obj.x + obj.width
+	local spacing = obj.width / data.num_points
+	local right_x = obj.x + obj.width
 
-	__cairo_move_to(cr, right, data[1])
-	
-	for i = 1, n do
-		__cairo_line_to(cr, right - i * spacing, data[i+1])
-	end
-	
-	if data.fill_source then
-		local bottom = obj.y + obj.height
-		__cairo_line_to(cr, right - n * spacing, bottom)
-		__cairo_line_to(cr, right, bottom)
-		__cairo_set_source(cr, data.fill_source)
-		__cairo_fill_preserve(cr)
-	end
-	
-	__cairo_set_line_width (cr, DATA_THICKNESS)
-	__cairo_set_line_cap(cr, DATA_CAP)
-	__cairo_set_line_join(cr, DATA_JOIN)
-	__cairo_set_source(cr, data.line_source)
-	__cairo_stroke(cr)
+	-- we stack from top to bottom, but index from bottom
+	for i = #data, 1, -1 do
+	   local series = data[i]
+	   local current_num_intervals = #series
+	   
+	   __cairo_move_to(cr, right_x, series[1])
+	   
+	   for j = 1, current_num_intervals - 1 do
+		  __cairo_line_to(cr, right_x - j * spacing, series[j+1])
+	   end
+	   
+	   if series.fill_source then
+		  local bottom_y = obj.y + obj.height
+		  -- bottom line only matters if we fill
+		  -- but if we do fill, we need to figure out if we are stacked
+		  if i == 1 then
+			 -- if this is the bottom series just draw a straight line along the x axis
+			 __cairo_line_to(cr, right_x - (current_num_intervals - 1) * spacing, bottom_y)
+			 __cairo_line_to(cr, right_x, bottom_y)
+		  else
+			 -- if this is not the bottom series then the bottom edge
+			 -- of this region is the next data series
+			 local next_series = data[i-1]
+			 for j = current_num_intervals, 1, -1 do
+				__cairo_line_to(cr, right_x - (j - 1) * spacing, next_series[j])
+			 end
+		  end
+		  __cairo_set_source(cr, series.fill_source)
+		  __cairo_fill_preserve(cr)
+	   end
 
+	   if series.line_source then
+		  __cairo_set_line_width (cr, DATA_THICKNESS)
+		  __cairo_set_line_cap(cr, DATA_CAP)
+		  __cairo_set_line_join(cr, DATA_JOIN)
+		  __cairo_set_source(cr, series.line_source)
+	   end
+		  __cairo_stroke(cr)
+	end
 	--draw graph outline (goes on top of everything)
 	local outline = obj.outline
 	

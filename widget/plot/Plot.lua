@@ -32,8 +32,7 @@ local update = function(obj, ...)
 	end
 end
 
-local draw = function(obj, cr)
-
+local draw_static = function(obj, cr)
 	--draw intervals
 	local intrvls = obj.intrvls
 	local x_intrvls = intrvls.x
@@ -49,6 +48,9 @@ local draw = function(obj, cr)
 		__cairo_append_path(cr, y_intrvls[i])
 	end
 	__cairo_stroke(cr)
+end
+
+local draw_dynamic = function(obj, cr)
 
 	--draw data on graph
 	local data = obj.data
@@ -159,7 +161,8 @@ local position_graph_outline = function(obj, cr)
 	obj.outline.path = Poly.create_path(cr, nil, p1, p2, p3)
 end
 
-M.draw = draw
+M.draw_static = draw_static
+M.draw_dynamic = draw_dynamic
 M.update = update
 M.position_x_intrvls = position_x_intrvls
 M.position_y_intrvls = position_y_intrvls

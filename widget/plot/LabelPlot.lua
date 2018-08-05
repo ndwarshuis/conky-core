@@ -13,28 +13,32 @@ local __cairo_stroke		= cairo_stroke
 local X_LABEL_PAD = 8
 local Y_LABEL_PAD = 5
 
-local draw = function(obj, cr)
-	local labels_x = obj.labels.x
-	local labels_y = obj.labels.y
-	local labels_x_1 = labels_x[1]
+local draw_static = function(obj, cr)
+   local labels_x = obj.labels.x
+   local labels_y = obj.labels.y
+   local labels_x_1 = labels_x[1]
+   
+   __cairo_set_font_face(cr, labels_x_1.font_face)
+   __cairo_set_font_size(cr, labels_x_1.font_size)
+   __cairo_set_source(cr, labels_x_1.source)
+   
+   for i = 1, #labels_x do
+	  local current_label = labels_x[i]
+	  __cairo_move_to(cr, current_label.x, current_label.y)
+	  __cairo_show_text(cr, current_label.text)
+   end
+   
+   for i = 1, #labels_y do
+	  local current_label = labels_y[i]
+	  __cairo_move_to(cr, current_label.x, current_label.y)
+	  __cairo_show_text(cr, current_label.text)
+   end
 
-	__cairo_set_font_face(cr, labels_x_1.font_face)
-	__cairo_set_font_size(cr, labels_x_1.font_size)
-	__cairo_set_source(cr, labels_x_1.source)
-	
-	for i = 1, #labels_x do
-		local current_label = labels_x[i]
-		__cairo_move_to(cr, current_label.x, current_label.y)
-		__cairo_show_text(cr, current_label.text)
-	end
+   Plot.draw_static(obj.plot, cr)
+end
 
-	for i = 1, #labels_y do
-		local current_label = labels_y[i]
-		__cairo_move_to(cr, current_label.x, current_label.y)
-		__cairo_show_text(cr, current_label.text)
-	end
-
-	Plot.draw(obj.plot, cr)
+local draw_dynamic = function(obj, cr)
+   Plot.draw_dynamic(obj.plot, cr)
 end
 
 local populate_x_labels = function(obj, cr, input_factor)
@@ -98,7 +102,8 @@ local update = function(obj, value)
 end
 
 M.update = update
-M.draw = draw
+M.draw_dynamic = draw_dynamic
+M.draw_static = draw_static
 M.position_x_intrvls = Plot.position_x_intrvls
 M.position_y_intrvls = Plot.position_y_intrvls
 M.position_graph_outline = Plot.position_graph_outline

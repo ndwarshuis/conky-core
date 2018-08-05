@@ -6,6 +6,17 @@ local __table_insert	= table.insert
 local __table_remove	= table.remove
 local __math_max        = math.max
 
+-- nothing here is "static" because we cannot assume that
+-- any object will remain the same shape (can shift in both x and y)
+local draw_static = function(obj, cr)
+   -- stub
+end
+
+local draw_dynamic = function(obj, cr)
+   LabelPlot.draw_static(obj, cr)
+   LabelPlot.draw_dynamic(obj, cr)
+end
+
 local scale_data = function(obj, cr, new_domain, new_factor)
 	local y = obj.y
 	local current_factor = obj.scale.factor
@@ -90,7 +101,9 @@ local update = function(obj, cr, ...)
 	--~ print('length', #timers)
 end
 
-M.draw = LabelPlot.draw
+-- M.draw = LabelPlot.draw
+M.draw_static = draw_static
+M.draw_dynamic = draw_dynamic
 M.update = update
 
 return M

@@ -17,14 +17,18 @@ local set = function(obj, percent)
 	end
 end
 
-local draw = function(obj, cr)
-	Arc.draw(obj, cr)
-	__cairo_set_source(cr, obj.current_source)
-	__cairo_append_path(cr, obj.dial_path)
-	__cairo_stroke(cr)
+local draw_static = function(obj, cr)
+   Arc.draw(obj, cr)
+end
+
+local draw_dynamic = function(obj, cr)
+   __cairo_set_source(cr, obj.current_source)
+   __cairo_append_path(cr, obj.dial_path)
+   __cairo_stroke(cr)
 end
 
 M.set = set
-M.draw = draw
+M.draw_static = draw_static
+M.draw_dynamic = draw_dynamic
 
 return M

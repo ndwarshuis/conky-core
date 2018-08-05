@@ -5,6 +5,8 @@ local Arc = require 'Arc'
 local __cairo_set_source  	= cairo_set_source
 local __cairo_stroke 	 	= cairo_stroke
 local __cairo_append_path 	= cairo_append_path
+local __cairo_set_line_width 	= cairo_set_line_width
+local __cairo_set_line_cap 		= cairo_set_line_cap
 
 local set = function(obj, percent)
 	obj.percent = percent
@@ -22,6 +24,8 @@ local draw_static = function(obj, cr)
 end
 
 local draw_dynamic = function(obj, cr)
+   __cairo_set_line_width(cr, obj.thickness)
+   __cairo_set_line_cap(cr, obj.cap)
    __cairo_set_source(cr, obj.current_source)
    __cairo_append_path(cr, obj.dial_path)
    __cairo_stroke(cr)

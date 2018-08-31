@@ -1,1 +1,114 @@
-conky library with useful functions for numeric processing and ui initialization
+conky library for use with higher level configs
+
+* installation
+Clone this repo somewhere in your conky config directory and add its path to lua:
+#+BEGIN_SRC lua
+package.path = package.path..'path/to/this/library'
+#+END_SRC
+* module structure
+Each file is consucted as a module, where all functions to be exported are explicitly named at the bottom:
+#+BEGIN_SRC lua
+M = {}
+
+-- exported functions
+local a = function () end
+local b = function () end
+
+M.a = a
+M.b = b
+
+return M
+#+END_SRC
+
+Modules are used as such:
+#+BEGIN_SRC lua
+local mod_name = 'mod_name'
+
+mod_name.a(args)
+#+END_SRC
+
+By convention, constructors (see widgets below) are capitalized and methods are lowercase
+* widget library
+privides higher-level constructors and methods for drawing complex shapes and graphs
+- Text: writing and placing text as well as changing the font face depending on input parameters
+- Dials and Bars: indicators that display percentages in either a straight or curved format
+- Plots: draws timecourse data (either percent or zero-bounded values) on a line graph
+** usage
+Each widget is split into static and dynamic components. The former are drawn once on loading and combined in a single image which is rendered on each update (this avoids multiple calls to cairo for drawing operations that will never change at all). The latter components are both calculated and drawn in each conky update cycle.
+
+The workflow for this looks like the following:
+#+BEGIN_SRC lua
+-- import required modules
+
+-- construct widgets
+
+-- draw all static components (one time, save on a cairo_surface)
+
+function conky_main()
+   -- render static surface (drawn below everything else)
+   -- update widget properties using set methods
+   -- draw dynamic components of each widget
+end
+#+END_SRC
+For example, to construct and render a dial for displaying memory used percent with a citical limit above 80%:
+#+BEGIN_SRC lua
+
+-- import constructors
+local Widget = require 'Widget'
+
+-- import patterns (see other conky configs using this core for examples)
+local Patterns		= require 'Patterns'
+
+-- import methods for Dial widget
+local Dial = require 'Dial'
+
+require 'cairo'
+
+-- construct a dial
+local dial = Widget.Dial{
+	x 				= 50,
+	y 				= 50,			
+	radius 			= 80,
+	thickness 		= 20,
+	critical_limit 	= '>0.8'
+}
+
+local SCREEN_WIDTH = 1920
+local SCREEN_HEIGHT = 1080
+
+-- render all static components and bake into a cairo surface to use later
+local cs_static = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, SCREEN_WIDTH, SCREEN_HEIGHT)
+local cr_static = cairo_create(cs_static)
+
+dial.draw_static(cr_static)
+
+cairo_destroy(cr_static)
+
+function conky_main()
+   local _cw = conky_window
+   if not _cw then return end
+
+   local cs = cairo_xlib_surface_create(_cw.display, _cw.drawable, _cw.visual, SCREEN_WIDTH, SCREEN_HEIGHT)
+   local cr = cairo_create(cs)
+
+   cairo_set_source_surface(cr, cs_static, 0, 0)
+   cairo_paint(cr)
+
+   local mem_perc
+
+   -- code to get memory percentage (values above 0.8 will make the dial turn red)
+
+   -- set the Dial
+   Dial.set(dial, mem_perc)
+
+   -- draw the dynamic components
+   Dial.draw(dial, cr)
+
+   cairo_surface_destroy(cs)
+   cairo_destroy(cr)
+   collectgarbage()
+end
+#+END_SRC
+* function library
+A json library (currently only decode to table is supported) as well as a variety of functions for string parsing and IO operations. 
+

@@ -66,11 +66,11 @@ require 'cairo'
 
 -- construct a dial
 local dial = Widget.Dial{
-	x 				= 50,
-	y 				= 50,			
-	radius 			= 80,
-	thickness 		= 20,
-	critical_limit 	= '>0.8'
+	x = 50,
+	y = 50,			
+	radius = 80,
+	thickness = 20,
+	critical_limit = '>0.8'
 }
 
 local SCREEN_WIDTH = 1920

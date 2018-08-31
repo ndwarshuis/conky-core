@@ -3,6 +3,7 @@ local M = {}
 local Super			= require 'Super'
 
 local Util			= require 'Util'
+-- TODO add default patterns
 local Patterns		= require 'Patterns'
 
 local Arc			= require 'Arc'

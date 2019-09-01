@@ -915,7 +915,7 @@ local initLabelPlot = function(arg)
 	local labels_x = obj.labels.x
 	
 	labels_x._func = x_label_func or function(fraction)
-		return Util.round((1-fraction) * seconds)..'s'
+		return Util.round_to_string((1-fraction) * seconds)..'s'
 	end
 
 	for i = 1, labels_x.n do
@@ -935,7 +935,7 @@ local initLabelPlot = function(arg)
 	local labels_y = obj.labels.y
 	
 	labels_y._func = y_label_func or function(fraction)
-		return (fraction * 100)..'%'
+		return Util.round_to_string(fraction * 100)..'%'
 	end
 
 	for i = 1, labels_y.n do

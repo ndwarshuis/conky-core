@@ -47,7 +47,11 @@ end
 local round_to_string = function(x, places)
 	places = places or 0
 	local y = round(x, places)
-	if places > 0 then return __string_format('%.'..places..'f', y) else return __tostring(y) end
+	if places >= 0 then
+       return __string_format('%.'..places..'f', y)
+    else
+       return __tostring(y)
+    end
 end
 
 local precision_round_to_string = function(x, sig_fig)
@@ -156,10 +160,7 @@ local capitalize_each_word = function(str)
 end
 
 function set_finalizer(tbl, gc_function)
-	local prox = newproxy(true)
-	__getmetatable(prox).__gc = gc_function or function() print("cleaning up:", tbl) end
-	tbl[prox] = true
-	return tbl
+   return setmetatable(tbl, {__gc = gc_function or function() print("cleaning up:", tbl) end})
 end
 
 M.round = round

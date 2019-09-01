@@ -39,7 +39,8 @@ end
 
 local update = function(obj, cr, ...)
    local scale = obj.scale
-   local new_domain, new_factor = obj.scale._func(__math_max(unpack(arg)))
+   local args = {...}
+   local new_domain, new_factor = obj.scale._func(__math_max(unpack(args)))
 	
 	--###tick/tock timers
 	
@@ -88,9 +89,9 @@ local update = function(obj, cr, ...)
 	
 	local data = obj.plot.data
 
-	for i = 1, #arg do
+	for i = 1, #args do
 	   local series = data[i]
-	   __table_insert(series, 1, obj.y + obj.plot.height * (1 - arg[i] * scale.factor))
+	   __table_insert(series, 1, obj.y + obj.plot.height * (1 - args[i] * scale.factor))
 	   if #series == data.num_points + 2 then series[#series] = nil end
 	end
 	--~ print('----------------------------------------------------------------------')

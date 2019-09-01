@@ -25,9 +25,10 @@ local OUTLINE_JOIN = CAIRO_LINE_JOIN_MITER
 
 local update = function(obj, ...)
    local data = obj.data
-   for i = 1, #arg do
+   local args = {...}
+   for i = 1, #args do
 	  local series = data[i]
-	  __table_insert(series, 1, obj.y + obj.height * (1 - arg[i]))
+	  __table_insert(series, 1, obj.y + obj.height * (1 - args[i]))
 	  if #series == data.num_points + 2 then series[#series] = nil end
 	end
 end
@@ -37,7 +38,7 @@ local draw_static = function(obj, cr)
 	local intrvls = obj.intrvls
 	local x_intrvls = intrvls.x
 	local y_intrvls = intrvls.y
-	
+
 	__cairo_set_line_width(cr, INTRVL_THICKNESS)
 	__cairo_set_line_cap(cr, INTRVL_CAP)
 	__cairo_set_source(cr, intrvls.source)
@@ -61,13 +62,13 @@ local draw_dynamic = function(obj, cr)
 	for i = #data, 1, -1 do
 	   local series = data[i]
 	   local current_num_intervals = #series
-	   
+
 	   __cairo_move_to(cr, right_x, series[1])
-	   
+
 	   for j = 1, current_num_intervals - 1 do
 		  __cairo_line_to(cr, right_x - j * spacing, series[j+1])
 	   end
-	   
+
 	   if series.fill_source then
 		  local bottom_y = obj.y + obj.height
 		  -- bottom line only matters if we fill
@@ -98,7 +99,7 @@ local draw_dynamic = function(obj, cr)
 	end
 	--draw graph outline (goes on top of everything)
 	local outline = obj.outline
-	
+
 	__cairo_append_path(cr, outline.path)
 	__cairo_set_line_width(cr, OUTLINE_THICKNESS)
 	__cairo_set_line_join(cr, OUTLINE_JOIN)
@@ -135,7 +136,7 @@ local position_y_intrvls = function(obj, cr)
 	local y_intrvl_height = obj.height / y_intrvls.n
 	local p1 = {x = 0, y = 0}
 	local p2 = {x = 0, y = 0}
-	
+
 	for i = 1, y_intrvls.n do
 		local y1 = obj.y + (i - 1) * y_intrvl_height - 0.5
 		p1.x = x1
@@ -157,7 +158,7 @@ local position_graph_outline = function(obj, cr)
 	local p3 = {x = x2, y = y2}
 
 	__cairo_path_destroy(obj.outline.path)
-	
+
 	obj.outline.path = Poly.create_path(cr, nil, p1, p2, p3)
 end
 

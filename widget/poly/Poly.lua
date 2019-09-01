@@ -14,8 +14,9 @@ local __cairo_stroke		    = cairo_stroke
 
 local create_path = function(cr, closed, ...)
 	__cairo_new_path(cr)
-	for i = 1, #arg do
-		__cairo_line_to(cr, arg[i].x, arg[i].y)
+    local args = {...}
+	for i = 1, #args do
+		__cairo_line_to(cr, args[i].x, args[i].y)
 	end
 	if closed then __cairo_close_path(cr) end
 	local path = __cairo_copy_path(cr)

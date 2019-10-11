@@ -1,7 +1,5 @@
 local M = {}
 
-local __pairs 			= pairs
-local __type 			= type
 local __tonumber		= tonumber
 local __tostring		= tostring
 local __io_popen 		= io.popen
@@ -15,7 +13,6 @@ local __string_format 	= string.format
 local __string_upper 	= string.upper
 local __conky_parse		= conky_parse
 local __select			= select
-local __getmetatable 	= getmetatable
 local __setmetatable 	= setmetatable
 
 local round = function(x, places)

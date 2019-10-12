@@ -100,6 +100,8 @@ local draw_dynamic = function(obj, cr)
 	--draw graph outline (goes on top of everything)
 	local outline = obj.outline
 
+    -- NOTE: these are dynamic because they need to be
+    -- drawn on top of the live graph even though it never changes
 	__cairo_append_path(cr, outline.path)
 	__cairo_set_line_width(cr, OUTLINE_THICKNESS)
 	__cairo_set_line_join(cr, OUTLINE_JOIN)

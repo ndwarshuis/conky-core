@@ -106,7 +106,7 @@ local DIAL_THICKNESS = 4
 local DIAL_THETA0 = 90
 local DIAL_THETA1 = 360
 local DIAL_ARC_PATTERN = Patterns.GREY_ROUNDED
-local DIAL_DIAL_PATTERN = Patterns.PURPLE_ROUNDED
+local DIAL_DIAL_PATTERN = Patterns.BLUE_ROUNDED
 local DIAL_CRITICAL_PATTERN = Patterns.RED_ROUNDED
 local DIAL_CRITICAL_LIMIT = '>80'
 
@@ -272,7 +272,7 @@ local BAR_THICKNESS = 10
 local BAR_CRITICAL_LIMIT = '>80'
 local BAR_CAP = CAIRO_LINE_CAP_BUTT
 local BAR_LINE_PATTERN = Patterns.GREY_ROUNDED
-local BAR_INDICATOR_PATTERN = Patterns.PURPLE_ROUNDED
+local BAR_INDICATOR_PATTERN = Patterns.BLUE_ROUNDED
 local BAR_CRITICAL_PATTERN = Patterns.RED_ROUNDED
 
 local initBar = function(arg)
@@ -572,7 +572,7 @@ CriticalText(x, y, [text], [font_size], [x_align], [y_align], [text_color], [fon
 	[slant], [weight], [append_front], [append_end], [critical_color], [critical_limit])
 ]]
 
-local CRITICALTEXT_COLOR = Patterns.PURPLE
+local CRITICALTEXT_COLOR = Patterns.BLUE
 local CRITICALTEXT_CRITICAL_COLOR = Patterns.RED
 
 local initCriticalText = function(arg)
@@ -672,7 +672,7 @@ local TABLE_SEPARATOR_CAP = CAIRO_LINE_CAP_BUTT
 
 local TABLE_NUM_ROWS = 5
 local TABLE_MAX_LENGTH = 8
-local TABLE_HEADER_COLOR = Patterns.PURPLE
+local TABLE_HEADER_COLOR = Patterns.BLUE
 local TABLE_BODY_COLOR = Patterns.LIGHT_GREY
 local TABLE_LINE_PATTERN = Patterns.DARK_GREY
 local TABLE_SEPARATOR_PATTERN = Patterns.DARK_GREY
@@ -773,7 +773,7 @@ local PLOT_NUM_X_INTERVAL = 9
 local PLOT_NUM_Y_INTERVAL = 4
 local PLOT_OUTLINE_PATTERN = Patterns.DARK_GREY
 local PLOT_INTRVL_PATTERN = Patterns.DARK_GREY
-local DATA_PATTERN = {Patterns.PLOT_LINE_PURPLE, Patterns.PLOT_FILL_PURPLE}
+local DATA_PATTERN = {Patterns.PLOT_LINE_BLUE, Patterns.PLOT_FILL_BLUE}
 
 local initPlot = function(arg)
 

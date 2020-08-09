@@ -2,6 +2,7 @@ local M = {}
 
 local LabelPlot = require 'LabelPlot'
 
+local __unpack          = table.unpack
 local __table_insert	= table.insert
 local __table_remove	= table.remove
 local __math_max        = math.max
@@ -40,7 +41,7 @@ end
 local update = function(obj, cr, ...)
    local scale = obj.scale
    local args = {...}
-   local new_domain, new_factor = obj.scale._func(__math_max(unpack(args)))
+   local new_domain, new_factor = obj.scale._func(__math_max(__unpack(args)))
 	
 	--###tick/tock timers
 	

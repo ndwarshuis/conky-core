@@ -27,7 +27,7 @@ local __cairo_set_font_size 		= cairo_set_font_size
 local __cairo_font_extents  		= cairo_font_extents
 local __cairo_toy_font_face_create 	= cairo_toy_font_face_create
 
-local __unpack		= unpack
+local __unpack		= table.unpack
 local __math_atan2	= math.atan2
 local __math_sin	= math.sin
 local __math_cos	= math.cos
@@ -899,7 +899,7 @@ local initLabelPlot = function(arg)
 		num_y_intrvl 		= num_y_intrvl,
 		outline_pattern 	= arg.outline_pattern,
 		intrvl_pattern 		= arg.intrvl_pattern,
-		unpack(arg)
+		__unpack(arg)
 	}
 
 	obj.labels = {
@@ -1001,7 +1001,7 @@ local initScalePlot = function(arg)
 		intrvl_pattern 		= arg.intrvl_pattern,
 		label_color 		= arg.label_color,
 		y_input_factor		= base ^ initial,
-		unpack(arg)
+		__unpack(arg)
 	}
 	
 	obj.scale = {
